@@ -1,0 +1,44 @@
+<%#
+  Site header. Pass `links: true` to show the section navigation (home page only).
+%>
+<header class="site-header" id="top">
+  <div class="container site-header__inner">
+    <a href="/<%= language %>" class="brand" aria-label="<%= site.name %>">
+      <span class="brand__mark">NM</span>
+      <span class="brand__name"><%= site.name %></span>
+    </a>
+
+    <% if (locals.links) { %>
+      <nav class="site-nav" id="site-nav" aria-label="Main">
+        <a href="#about"><%= __('nav.about') %></a>
+        <a href="#skills"><%= __('nav.skills') %></a>
+        <a href="#projects"><%= __('nav.projects') %></a>
+        <a href="#services"><%= __('nav.services') %></a>
+        <a href="#contact"><%= __('nav.contact') %></a>
+      </nav>
+    <% } %>
+
+    <div class="site-header__actions">
+      <div class="lang-switch" role="group" aria-label="Language">
+        <% site.languages.forEach(lang => { %>
+          <a href="/<%= lang %><%= currentPath === '/' ? '' : currentPath %>"
+             class="lang-switch__option<%= lang === language ? ' is-active' : '' %>"
+             hreflang="<%= lang %>"
+             <%- lang === language ? 'aria-current="true"' : '' %>><%= lang.toUpperCase() %></a>
+        <% }) %>
+      </div>
+
+      <button type="button" class="icon-button theme-toggle" id="theme-toggle" aria-label="Toggle light and dark mode">
+        <%- include('icon', { name: 'sun', className: 'theme-toggle__sun' }) %>
+        <%- include('icon', { name: 'moon', className: 'theme-toggle__moon' }) %>
+      </button>
+
+      <% if (locals.links) { %>
+        <button type="button" class="icon-button menu-toggle" id="menu-toggle" aria-controls="site-nav" aria-expanded="false" aria-label="Menu">
+          <%- include('icon', { name: 'menu', className: 'menu-toggle__open' }) %>
+          <%- include('icon', { name: 'close', className: 'menu-toggle__close' }) %>
+        </button>
+      <% } %>
+    </div>
+  </div>
+</header>

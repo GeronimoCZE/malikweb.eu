@@ -1,0 +1,30 @@
+{
+  "name": "malikweb",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/app.js",
+    "dev": "concurrently --kill-others \"nodemon src/app.js\" \"sass --watch src/public/scss:src/public/css\"",
+    "build:css": "sass --style=compressed --no-source-map src/public/scss:src/public/css"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "ejs": "^4.0.1",
+    "express": "^5.2.1",
+    "i18n": "^0.15.3",
+    "mongoose": "^9.7.3",
+    "multer": "^2.2.0",
+    "sass": "^1.97.3"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1",
+    "nodemon": "^3.1.14"
+  }
+}

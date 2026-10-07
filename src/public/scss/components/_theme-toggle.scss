@@ -1,0 +1,27 @@
+// Sun is shown in dark mode (switch to light), moon in light mode.
+.theme-toggle {
+  position: relative;
+  overflow: hidden;
+
+  .icon {
+    grid-area: 1 / 1;
+    transition: transform 0.5s var(--ease-out), opacity 0.3s ease;
+  }
+
+  &__sun {
+    opacity: 0;
+    transform: rotate(-90deg) scale(0.5);
+  }
+
+  [data-theme='dark'] & {
+    .theme-toggle__sun {
+      opacity: 1;
+      transform: none;
+    }
+
+    .theme-toggle__moon {
+      opacity: 0;
+      transform: rotate(90deg) scale(0.5);
+    }
+  }
+}

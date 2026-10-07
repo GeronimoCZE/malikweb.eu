@@ -1,0 +1,77 @@
+// Design tokens. All colours live here, so the light and dark themes stay in one place.
+
+:root {
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --radius-sm: 8px;
+  --radius: 14px;
+  --radius-lg: 20px;
+
+  --container: 1120px;
+  --header-height: 68px;
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --duration: 0.25s;
+
+  // Light theme (default)
+  --bg: #fafafa;
+  --bg-elevated: #ffffff;
+  --surface: #ffffff;
+  --surface-hover: #f6f5fb;
+  --border: #e6e4ee;
+  --border-strong: #d5d1e2;
+  --text: #16141f;
+  --text-muted: #5b5870;
+  --text-subtle: #8a879b;
+  --accent: #7034da;
+  --accent-hover: #5f27c4;
+  --accent-contrast: #ffffff;
+  --accent-soft: rgba(112, 52, 218, 0.09);
+  --header-bg: rgba(250, 250, 250, 0.72);
+  --shadow: 0 1px 2px rgba(22, 20, 31, 0.04), 0 8px 24px -12px rgba(22, 20, 31, 0.12);
+  --shadow-lg: 0 2px 4px rgba(22, 20, 31, 0.04), 0 24px 48px -20px rgba(22, 20, 31, 0.22);
+  --glow-1: rgba(135, 73, 235, 0.22);
+  --glow-2: rgba(46, 156, 219, 0.16);
+  --success: #1f8a4c;
+  --danger: #d93a3a;
+
+  color-scheme: light;
+}
+
+// Dark theme values, shared by the toggle and the no-JS system fallback below.
+@mixin dark-theme {
+  --bg: #0b0a10;
+  --bg-elevated: #121119;
+  --surface: #131219;
+  --surface-hover: #1a1822;
+  --border: #24222e;
+  --border-strong: #34313f;
+  --text: #f2f1f6;
+  --text-muted: #a6a3b5;
+  --text-subtle: #75727f;
+  --accent: #a682f5;
+  --accent-hover: #bb9ef8;
+  --accent-contrast: #14101f;
+  --accent-soft: rgba(166, 130, 245, 0.12);
+  --header-bg: rgba(11, 10, 16, 0.7);
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px -12px rgba(0, 0, 0, 0.6);
+  --shadow-lg: 0 2px 4px rgba(0, 0, 0, 0.3), 0 24px 48px -20px rgba(0, 0, 0, 0.8);
+  --glow-1: rgba(135, 73, 235, 0.28);
+  --glow-2: rgba(46, 156, 219, 0.14);
+  --success: #4cc985;
+  --danger: #f06a6a;
+
+  color-scheme: dark;
+}
+
+:root[data-theme='dark'] {
+  @include dark-theme;
+}
+
+// Without JavaScript the inline theme script never runs, so fall back to the system setting.
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    @include dark-theme;
+  }
+}

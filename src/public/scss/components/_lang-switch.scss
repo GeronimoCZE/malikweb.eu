@@ -1,0 +1,27 @@
+.lang-switch {
+  display: inline-flex;
+  padding: 3px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+
+  &__option {
+    padding: 5px 9px;
+    border-radius: 7px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: var(--text-subtle);
+    transition: color var(--duration) ease, background-color var(--duration) ease;
+
+    &:hover {
+      color: var(--text);
+    }
+
+    &.is-active {
+      background: var(--accent-soft);
+      color: var(--accent);
+      pointer-events: none;
+    }
+  }
+}

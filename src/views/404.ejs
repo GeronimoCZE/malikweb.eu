@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="<%= language %>">
+<%- include('partials/head', { pageTitle: `${__('notFound.title')} | ${site.name}`, noindex: true }) %>
+<body>
+  <%- include('partials/header') %>
+
+  <main class="not-found">
+    <div class="container not-found__inner">
+      <p class="not-found__code" data-animate>404</p>
+      <h1 class="not-found__title" data-animate><%= __('notFound.title') %></h1>
+      <p class="muted" data-animate><%= __('notFound.text') %></p>
+      <a href="/<%= language %>" class="btn btn--primary" data-animate>
+        <%- include('partials/icon', { name: 'arrowLeft' }) %>
+        <%= __('notFound.back') %>
+      </a>
+    </div>
+  </main>
+
+  <%- include('partials/footer') %>
+</body>
+</html>
