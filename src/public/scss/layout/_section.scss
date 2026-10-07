@@ -1,0 +1,30 @@
+@use '../abstracts/breakpoints' as bp;
+
+.section {
+  padding: 96px 0 0;
+
+  &--tight {
+    padding-top: 64px;
+  }
+
+  @include bp.down(sm) {
+    padding-top: 72px;
+  }
+
+  &__header {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    margin-bottom: 32px;
+  }
+
+  &__index {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--accent);
+  }
+
+  &__title {
+    font-size: clamp(1.7rem, 3vw, 2.2rem);
+  }
+}

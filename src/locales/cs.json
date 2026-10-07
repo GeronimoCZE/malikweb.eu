@@ -1,0 +1,138 @@
+{
+	"title": "Osobní web a portfolio webového vývojáře",
+	"meta": {
+		"description": "Nikolas Malík, webový vývojář samouk z Česka. Portfolio webů a webových aplikací postavených na Node.js, Express, MongoDB a moderním frontendu.",
+		"jobTitle": "Webový vývojář"
+	},
+	"personal": {
+		"location": "Žďárky (okr. Náchod), Česká republika",
+		"born": "Ročník 2001",
+		"gender": "Pohlaví: Muž"
+	},
+	"nav": {
+		"about": "O mně",
+		"skills": "Dovednosti",
+		"projects": "Projekty",
+		"services": "Služby",
+		"contact": "Kontakt"
+	},
+	"main": {
+		"about": {
+			"title": "O mně",
+			"text": "Ahoj, jmenuji se Nikolas Malík a vytvářím webové aplikace a webové stránky jako koníček. Dělám to už několik let a vždy hledám nové výzvy a příležitosti k učení a růstu jako vývojář. Jsem nadšený pro webový vývoj a vždy hledám nové způsoby, jak zlepšit své dovednosti a znalosti v této oblasti. Mám také zájem o jiné oblasti technologie a vždy hledám nové způsoby, jak rozšířit své znalosti a dovednosti v těchto oblastech. Jsem samouk vývojář a všechno, co vím, jsem se naučil prostřednictvím online zdrojů, tutoriálů a praxe. Vždy hledám nové příležitosti k učení a růstu jako vývojář a jsem nadšený, kam mě moje cesta v budoucnu zavede.",
+			"text2": "Kromě toho, rád trávím čas v přírodě, se psem. Mám rád pohyb, v určité míře. Také se rád učím nové věci a zkouším nové věci, i když ne vždy se mi do toho chce.",
+			"resume": "Životopis.pdf"
+		},
+		"skills": {
+			"title": "Dovednosti",
+			"skills": [
+				{
+					"name": "frontend",
+					"description": "Zkušenosti s HTML, CSS, JavaScriptem, jQuery a Sass (SCSS)"
+				},
+				{
+					"name": "backend",
+					"description": "Zkušenosti s Node.js a různými backendovými frameworky, jako jsou Express.js, Python a trochu php. Také znám základy CMS systémů"
+				},
+				{
+					"name": "databáze",
+					"description": "Zkušenosti s různými databázemi, jako jsou MySQL, MongoDB a PostgreSQL."
+				},
+				{
+					"name": "version control",
+					"description": "Zkušenosti s Git a GitHubem pro správu verzí a spolupráci na projektech."
+				},
+				{
+					"name": "deployment",
+					"description": "Zkušenosti s linuxem, správou Ubuntu serveru a různými poskytovateli hostingů, jako např. DigitalOcean nebo Hostinger."
+				},
+				{
+					"name": "počítačový hardware",
+					"description": "Zkušenosti s počítačovým hardwarem, včetně sestavování počítačů, stejně jako práce s různými operačními systémy, jako jsou Windows, Linux."
+				}
+			]
+		},
+		"projects": {
+			"title": "Projekty",
+			"empty": "Nenalezeny žádné projekty."
+		},
+		"services": {
+			"title": "Služby",
+			"text": "Kromě vlastních projektů pracuji i pro ostatní. Pokud potřebujete pomoct s něčím z následujícího, ozvěte se.",
+			"cta": "Mám zájem",
+			"items": [
+				{
+					"icon": "team",
+					"name": "Spolupráce v IT",
+					"description": "Potřebujete posilu do týmu, pomoct se serverem nebo někoho, kdo vám dá do pořádku IT? Můžu se zapojit do vašeho projektu nebo pro vás vyřešit konkrétní úkol, krátkodobě i dlouhodobě.",
+					"points": [
+						"Vývoj webových aplikací",
+						"Nastavení a správa serverů (Linux, Ubuntu)",
+						"Hardware a běžná pomoc s IT"
+					]
+				},
+				{
+					"icon": "globe",
+					"name": "Weby pro firmy",
+					"description": "Rychlý a moderní web, který představí vaši firmu, dobře funguje na mobilu a dá se snadno najít na Googlu.",
+					"points": [
+						"Design na míru, ve světlém i tmavém režimu",
+						"Optimalizace pro mobily a vyhledávače",
+						"Zajištění hostingu a následná péče"
+					]
+				},
+				{
+					"icon": "cart",
+					"name": "E-shopy",
+					"description": "Internetový obchod, ve kterém si sami spravujete produkty i objednávky, s platbami a dopravou, které vaši zákazníci znají.",
+					"points": [
+						"Správa produktů a objednávek",
+						"Platební brána a možnosti dopravy",
+						"Připravený růst spolu s vaším podnikáním"
+					]
+				}
+			]
+		},
+		"contact": {
+			"title": "Kontakt",
+			"text": "Pokud máte zájem o spolupráci nebo jen chcete říct ahoj, neváhejte mi napsat zprávu nebo mě kontaktovat prostřednictvím e-mailu či telefonu.",
+			"email": "Email: ",
+			"phone": "Mobil: ",
+			"form": {
+				"title": "Napište mi",
+				"email": "Váš e-mail",
+				"emailPlaceholder": "vy@example.com",
+				"subject": "Předmět",
+				"subjectPlaceholder": "O co jde?",
+				"message": "Zpráva",
+				"messagePlaceholder": "Napište mi něco o svém projektu nebo nápadu.",
+				"send": "Odeslat zprávu",
+				"sending": "Odesílám…",
+				"sent": "Děkuji, zpráva byla odeslána. Brzy se vám ozvu.",
+				"invalid": "Vyplňte prosím platný e-mail, předmět a zprávu.",
+				"limit": "Příliš mnoho zpráv v krátké době. Zkuste to prosím později.",
+				"error": "Zprávu se nepodařilo odeslat. Zkuste to prosím znovu, nebo mi napište e-mail přímo.",
+				"direct": "Nebo mě kontaktujte přímo"
+			}
+		},
+		"footer": {
+			"rights": "main.footer.rights"
+		}
+	},
+	"projects": {
+		"technologies": "Technologie použité v tomto projektu",
+		"gallery": "Galerie"
+	},
+	"footer": {
+		"rights": "Všechna práva vyhrazena."
+	},
+	"helpers": {
+		"reveal": "odhalit",
+		"loading": "Načítám data"
+	},
+	"notFound": {
+		"title": "Stránka nenalezena",
+		"text": "Stránka, kterou hledáte, neexistuje nebo byla přesunuta.",
+		"back": "Zpět na úvodní stránku"
+	}
+}

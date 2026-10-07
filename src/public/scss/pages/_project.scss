@@ -1,0 +1,100 @@
+@use '../abstracts/breakpoints' as bp;
+
+.project-page {
+  padding-top: 40px;
+
+  &__header {
+    margin: 32px 0 36px;
+  }
+
+  &__title {
+    font-size: clamp(2.2rem, 6vw, 3.6rem);
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    --delay: 60ms;
+  }
+
+  &__lead {
+    max-width: 680px;
+    margin-top: 14px;
+    font-size: 1.15rem;
+    --delay: 120ms;
+  }
+
+  &__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 24px;
+    --delay: 180ms;
+  }
+
+  &__cover {
+    overflow: hidden;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    background: var(--surface);
+    --delay: 220ms;
+
+    img {
+      width: 100%;
+    }
+  }
+
+  &__body {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap: 40px;
+    align-items: start;
+    margin-top: 48px;
+
+    @include bp.down(md) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__description p {
+    font-size: 1.05rem;
+    line-height: 1.8;
+    white-space: pre-line;
+  }
+
+  &__tech {
+    position: sticky;
+    top: calc(var(--header-height) + 24px);
+    padding: 24px;
+
+    .card__title {
+      font-size: 0.95rem;
+      margin-bottom: 14px;
+    }
+  }
+}
+
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+  gap: 16px;
+
+  &__item {
+    display: block;
+    overflow: hidden;
+    aspect-ratio: 16 / 10;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+    cursor: zoom-in;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s var(--ease-out);
+    }
+
+    &:hover img {
+      transform: scale(1.04);
+    }
+  }
+}

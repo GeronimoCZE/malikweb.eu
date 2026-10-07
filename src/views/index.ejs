@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="<%= language %>">
+<%- include('partials/head') %>
+<body>
+  <%- include('partials/header', { links: true }) %>
+
+  <main>
+    <section class="hero">
+      <div class="hero__glow" aria-hidden="true"></div>
+      <div class="container hero__inner">
+        <p class="hero__eyebrow" data-animate>
+          <%- include('partials/icon', { name: 'pin' }) %>
+          <%= __('personal.location') %>
+        </p>
+        <h1 class="hero__title" data-animate><%= site.name %></h1>
+        <p class="hero__subtitle" data-animate><%= __('title') %></p>
+        <div class="hero__actions" data-animate>
+          <a href="<%= site.resume %>" target="_blank" class="btn btn--primary">
+            <%- include('partials/icon', { name: 'file' }) %>
+            <%= __('main.about.resume') %>
+          </a>
+          <a href="#contact" class="btn btn--ghost">
+            <%= __('main.contact.title') %>
+            <%- include('partials/icon', { name: 'arrowRight' }) %>
+          </a>
+        </div>
+        <div class="hero__social" data-animate>
+          <% site.social.forEach(link => { %>
+            <a href="<%= link.url %>" target="_blank" rel="noopener noreferrer" class="icon-button" aria-label="<%= link.label %>">
+              <%- include('partials/icon', { name: link.icon }) %>
+            </a>
+          <% }) %>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="about">
+      <div class="container">
+        <header class="section__header" data-animate>
+          <span class="section__index">01</span>
+          <h2 class="section__title"><%= __('main.about.title') %></h2>
+        </header>
+        <div class="about" data-animate>
+          <p class="about__lead"><%= __('main.about.text') %></p>
+          <p><%= __('main.about.text2') %></p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="skills">
+      <div class="container">
+        <header class="section__header" data-animate>
+          <span class="section__index">02</span>
+          <h2 class="section__title"><%= __('main.skills.title') %></h2>
+        </header>
+        <div class="grid grid--3">
+          <% __('main.skills.skills', { returnObjects: true }).forEach((skill, i) => { %>
+            <article class="card skill" data-animate style="--delay: <%= i * 60 %>ms">
+              <span class="skill__number"><%= String(i + 1).padStart(2, '0') %></span>
+              <h3 class="card__title"><%= skill.name %></h3>
+              <p class="card__text"><%= skill.description %></p>
+            </article>
+          <% }) %>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="projects">
+      <div class="container">
+        <header class="section__header" data-animate>
+          <span class="section__index">03</span>
+          <h2 class="section__title"><%= __('main.projects.title') %></h2>
+        </header>
+        <% if (projects.length) { %>
+          <div class="grid grid--3">
+            <% projects.forEach((project, i) => { %>
+              <a href="/<%= language %>/projects/<%= encodeURIComponent(project.name) %>" class="card project-card" data-animate style="--delay: <%= i * 60 %>ms">
+                <div class="project-card__media">
+                  <img src="<%= project.thumb_image %>" alt="" loading="lazy">
+                </div>
+                <div class="project-card__body">
+                  <h3 class="card__title">
+                    <%= project.name %>
+                    <%- include('partials/icon', { name: 'arrowRight', className: 'project-card__arrow' }) %>
+                  </h3>
+                  <p class="card__text"><%= project.thumb_description %></p>
+                  <% if (project.technologies?.length) { %>
+                    <ul class="tags">
+                      <% project.technologies.forEach(tech => { %>
+                        <li class="tag"><%= tech %></li>
+                      <% }) %>
+                    </ul>
+                  <% } %>
+                </div>
+              </a>
+            <% }) %>
+          </div>
+        <% } else { %>
+          <p class="muted" data-animate><%= __('main.projects.empty') %></p>
+        <% } %>
+      </div>
+    </section>
+
+    <section class="section" id="services">
+      <div class="container">
+        <header class="section__header" data-animate>
+          <span class="section__index">04</span>
+          <h2 class="section__title"><%= __('main.services.title') %></h2>
+        </header>
+        <p class="section__lead" data-animate><%= __('main.services.text') %></p>
+        <div class="grid grid--3">
+          <% __('main.services.items', { returnObjects: true }).forEach((service, i) => { %>
+            <article class="card service" data-animate style="--delay: <%= i * 80 %>ms">
+              <span class="service__icon"><%- include('partials/icon', { name: service.icon }) %></span>
+              <h3 class="card__title"><%= service.name %></h3>
+              <p class="card__text"><%= service.description %></p>
+              <ul class="service__points">
+                <% service.points.forEach(point => { %>
+                  <li><%- include('partials/icon', { name: 'check' }) %><%= point %></li>
+                <% }) %>
+              </ul>
+              <a href="#contact" class="service__cta" data-subject="<%= service.name %>">
+                <%= __('main.services.cta') %>
+                <%- include('partials/icon', { name: 'arrowRight' }) %>
+              </a>
+            </article>
+          <% }) %>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="contact">
+      <div class="container">
+        <header class="section__header" data-animate>
+          <span class="section__index">05</span>
+          <h2 class="section__title"><%= __('main.contact.title') %></h2>
+        </header>
+        <div class="contact">
+          <div class="contact__info card" data-animate>
+            <p class="contact__text"><%= __('main.contact.text') %></p>
+            <h3 class="contact__subtitle"><%= __('main.contact.form.direct') %></h3>
+            <ul class="contact__list">
+              <li>
+                <span class="contact__label"><%- include('partials/icon', { name: 'mail' }) %><%= __('main.contact.email') %></span>
+                <button type="button" class="reveal" data-reveal="email" data-value="<%= Buffer.from(site.contact.email).toString('base64') %>"><%= __('helpers.reveal') %></button>
+              </li>
+              <li>
+                <span class="contact__label"><%- include('partials/icon', { name: 'phone' }) %><%= __('main.contact.phone') %></span>
+                <button type="button" class="reveal" data-reveal="phone" data-value="<%= Buffer.from(site.contact.phone).toString('base64') %>"><%= __('helpers.reveal') %></button>
+              </li>
+            </ul>
+            <div class="contact__links">
+              <% site.social.forEach(link => { %>
+                <a href="<%= link.url %>" target="_blank" rel="noopener noreferrer" class="btn btn--ghost">
+                  <%- include('partials/icon', { name: link.icon }) %> <%= link.label %>
+                </a>
+              <% }) %>
+            </div>
+          </div>
+
+          <%# Saved to MongoDB and listed under Messages in the admin page. Works without JavaScript too. %>
+          <form class="contact__form card" id="contact-form" action="/api/messages" method="post" data-animate style="--delay: 80ms"
+                data-messages="<%= JSON.stringify({ sending: __('main.contact.form.sending'), sent: __('main.contact.form.sent'), invalid: __('main.contact.form.invalid'), limit: __('main.contact.form.limit'), error: __('main.contact.form.error') }) %>">
+            <h3 class="contact__subtitle"><%= __('main.contact.form.title') %></h3>
+            <input type="hidden" name="language" value="<%= language %>">
+            <%# Hidden from people; bots that fill it in are ignored. %>
+            <label class="contact__trap" aria-hidden="true">Website <input name="website" tabindex="-1" autocomplete="off"></label>
+            <label class="field">
+              <span class="field__label"><%= __('main.contact.form.email') %></span>
+              <input class="field__input" type="email" name="email" maxlength="200" placeholder="<%= __('main.contact.form.emailPlaceholder') %>" autocomplete="email" required>
+            </label>
+            <label class="field">
+              <span class="field__label"><%= __('main.contact.form.subject') %></span>
+              <input class="field__input" name="subject" id="contact-subject" maxlength="150" placeholder="<%= __('main.contact.form.subjectPlaceholder') %>" required>
+            </label>
+            <label class="field">
+              <span class="field__label"><%= __('main.contact.form.message') %></span>
+              <textarea class="field__input" name="message" rows="6" maxlength="5000" placeholder="<%= __('main.contact.form.messagePlaceholder') %>" required></textarea>
+            </label>
+            <% const status = ['sent', 'invalid', 'limit', 'error'].includes(locals.contactStatus) ? contactStatus : null; %>
+            <p class="form-status<%= status ? (status === 'sent' ? ' is-success' : ' is-error') : '' %>" id="contact-status" role="status" aria-live="polite"><%= status ? __(`main.contact.form.${status}`) : '' %></p>
+            <button type="submit" class="btn btn--primary contact__submit">
+              <%= __('main.contact.form.send') %>
+              <%- include('partials/icon', { name: 'send' }) %>
+            </button>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <%- include('partials/footer') %>
+</body>
+</html>

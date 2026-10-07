@@ -1,0 +1,27 @@
+.not-found {
+  &__inner {
+    min-height: calc(100vh - var(--header-height) - 120px);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 16px;
+    padding-block: 64px;
+  }
+
+  &__code {
+    font-family: var(--font-mono);
+    font-size: 0.95rem;
+    color: var(--accent);
+  }
+
+  &__title {
+    font-size: clamp(2.2rem, 6vw, 3.6rem);
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    --delay: 60ms;
+  }
+
+  .muted { --delay: 120ms; }
+  .btn { margin-top: 8px; --delay: 180ms; }
+}

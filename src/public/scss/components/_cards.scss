@@ -1,0 +1,33 @@
+.card {
+  position: relative;
+  display: block;
+  padding: 28px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  transition:
+    border-color var(--duration) ease,
+    background-color var(--duration) ease,
+    box-shadow 0.4s var(--ease-out),
+    transform 0.4s var(--ease-out);
+
+  &__title {
+    font-size: 1.12rem;
+    font-weight: 650;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+
+  &__text {
+    font-size: 0.96rem;
+  }
+}
+
+// Interactive cards lift slightly on hover.
+a.card:hover,
+.card.skill:hover {
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-4px);
+}

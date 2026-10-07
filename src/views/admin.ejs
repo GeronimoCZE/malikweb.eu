@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('partials/head', { pageTitle: `Admin | ${site.name}`, noindex: true }) %>
+<body class="admin">
+  <%- include('partials/header') %>
+
+  <main class="container admin__main">
+
+    <%# Step 1: unlock with the API key (PORTFOLIO_API_KEY in src/config/.env). %>
+    <section class="admin__login card" id="login" hidden>
+      <h1 class="admin__title">Admin</h1>
+      <p>Enter your API key to manage projects and read messages.</p>
+      <form id="login-form" class="admin__row">
+        <input type="password" id="api-key" class="field__input" placeholder="API key" autocomplete="current-password" required>
+        <button class="btn btn--primary" type="submit">Unlock</button>
+      </form>
+    </section>
+
+    <%# Switches between the project list and the contact form messages. %>
+    <nav class="admin__tabs" id="admin-tabs" aria-label="Admin sections" hidden>
+      <button type="button" class="admin__tab" data-tab="list">Projects</button>
+      <button type="button" class="admin__tab" data-tab="messages">Messages <span class="admin__count" id="unread-count" hidden></span></button>
+      <button type="button" class="btn btn--ghost admin__lock" id="logout">Lock</button>
+    </nav>
+
+    <%# Step 2: list of projects. %>
+    <section id="list-view" hidden>
+      <header class="admin__head">
+        <h1 class="admin__title">Projects</h1>
+        <button type="button" class="btn btn--primary" id="new-project">+ New project</button>
+      </header>
+      <ul class="admin__list" id="project-list"></ul>
+      <p class="muted" id="empty-list" hidden>No projects yet. Add your first one.</p>
+    </section>
+
+    <%# Messages sent through the contact form on the home page. %>
+    <section id="messages-view" hidden>
+      <header class="admin__head">
+        <h1 class="admin__title">Messages</h1>
+        <button type="button" class="btn btn--ghost" id="refresh-messages">Refresh</button>
+      </header>
+      <ul class="admin__messages" id="message-list"></ul>
+      <p class="muted" id="empty-messages" hidden>No messages yet. They appear here when someone uses the contact form.</p>
+    </section>
+
+    <%# Step 3: create or edit one project. %>
+    <section id="editor-view" hidden>
+      <header class="admin__head">
+        <h1 class="admin__title" id="editor-title">New project</h1>
+        <button type="button" class="btn btn--ghost" id="cancel-edit">Back to list</button>
+      </header>
+
+      <form id="project-form" class="admin__form" novalidate>
+        <div class="card admin__card">
+          <h2 class="admin__subtitle">Basics</h2>
+          <label class="field">
+            <span class="field__label">Name <small>(also used in the page address)</small></span>
+            <input class="field__input" name="name" required>
+          </label>
+
+          <div class="field">
+            <span class="field__label">Thumbnail</span>
+            <div class="admin__thumb">
+              <img id="thumb-preview" alt="" hidden>
+              <label class="btn btn--ghost admin__file">
+                <span id="thumb-label">Choose image</span>
+                <input type="file" name="thumb_image" id="thumb-input" accept="image/*">
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="card admin__card">
+          <h2 class="admin__subtitle">Texts</h2>
+          <% site.languages.forEach(lang => { %>
+            <div class="admin__lang">
+              <span class="admin__lang-tag"><%= lang.toUpperCase() %></span>
+              <label class="field">
+                <span class="field__label">Short description <small>(on the project card)</small></span>
+                <textarea class="field__input" name="thumb_<%= lang %>" rows="2"></textarea>
+              </label>
+              <label class="field">
+                <span class="field__label">Full description <small>(on the project page)</small></span>
+                <textarea class="field__input" name="desc_<%= lang %>" rows="6"></textarea>
+              </label>
+            </div>
+          <% }) %>
+        </div>
+
+        <div class="card admin__card">
+          <h2 class="admin__subtitle">Technologies</h2>
+          <ul class="tags admin__tags" id="tech-list"></ul>
+          <input class="field__input" id="tech-input" placeholder="Type a technology and press Enter">
+        </div>
+
+        <div class="card admin__card">
+          <h2 class="admin__subtitle">Links</h2>
+          <div id="link-list" class="admin__links"></div>
+          <button type="button" class="btn btn--ghost" id="add-link">+ Add link</button>
+        </div>
+
+        <div class="card admin__card">
+          <h2 class="admin__subtitle">Gallery</h2>
+          <p class="muted">Captions are optional. Use the arrows to change the order.</p>
+          <div class="admin__gallery" id="gallery"></div>
+          <label class="btn btn--ghost admin__file">
+            + Add images
+            <input type="file" id="images-input" accept="image/*" multiple>
+          </label>
+        </div>
+
+        <div class="admin__actions">
+          <button type="button" class="btn btn--ghost admin__danger" id="delete-project" hidden>Delete project</button>
+          <button type="submit" class="btn btn--primary" id="save-project">Save</button>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <div class="admin__toast" id="toast" role="status" aria-live="polite"></div>
+
+  <%# Settings admin.js needs from the server. %>
+  <script type="application/json" id="admin-config"><%- JSON.stringify({ languages: site.languages }) %></script>
+  <script src="/js/admin.js" type="module"></script>
+</body>
+</html>

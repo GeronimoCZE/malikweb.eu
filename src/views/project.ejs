@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="<%= language %>">
+<%- include('partials/head', {
+  pageTitle: `${project.name} | ${site.name}`,
+  pageDescription: project.thumb_description || project.description,
+  ogImage: project.thumb_image,
+  ogType: 'article'
+}) %>
+<body>
+  <%- include('partials/header') %>
+
+  <main class="project-page">
+    <div class="container">
+      <a href="/<%= language %>#projects" class="back-link" data-animate>
+        <%- include('partials/icon', { name: 'arrowLeft' }) %>
+        <%= __('main.projects.title') %>
+      </a>
+
+      <header class="project-page__header">
+        <h1 class="project-page__title" data-animate><%= project.name %></h1>
+        <% if (project.thumb_description) { %>
+          <p class="project-page__lead" data-animate><%= project.thumb_description %></p>
+        <% } %>
+        <% if (project.links?.length) { %>
+          <div class="project-page__links" data-animate>
+            <% project.links.forEach(link => { %>
+              <a href="<%= link.url %>" target="_blank" rel="noopener noreferrer" class="btn btn--primary">
+                <%= link.title %>
+                <%- include('partials/icon', { name: 'external' }) %>
+              </a>
+            <% }) %>
+          </div>
+        <% } %>
+      </header>
+
+      <figure class="project-page__cover" data-animate>
+        <img src="<%= project.thumb_image %>" alt="<%= project.name %>">
+      </figure>
+
+      <div class="project-page__body">
+        <section class="project-page__description" data-animate>
+          <p><%= project.description %></p>
+        </section>
+
+        <% if (project.technologies?.length) { %>
+          <aside class="card project-page__tech" data-animate>
+            <h2 class="card__title"><%= __('projects.technologies') %></h2>
+            <ul class="tags">
+              <% project.technologies.forEach(tech => { %>
+                <li class="tag"><%= tech %></li>
+              <% }) %>
+            </ul>
+          </aside>
+        <% } %>
+      </div>
+
+      <% if (project.images?.length) { %>
+        <section class="section section--tight">
+          <header class="section__header" data-animate>
+            <h2 class="section__title"><%= __('projects.gallery') %></h2>
+          </header>
+          <div class="gallery">
+            <% project.images.forEach((img, i) => { %>
+              <a href="<%= img.url %>" target="_blank" rel="noopener noreferrer" class="gallery__item" data-lightbox data-animate style="--delay: <%= (i % 3) * 60 %>ms">
+                <img src="<%= img.url %>" alt="<%= img.alt || project.name %>" loading="lazy">
+              </a>
+            <% }) %>
+          </div>
+        </section>
+      <% } %>
+    </div>
+  </main>
+
+  <%- include('partials/footer') %>
+  <%- include('partials/lightbox') %>
+</body>
+</html>

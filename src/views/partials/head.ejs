@@ -1,0 +1,79 @@
+<%#
+  Shared <head>. Optional values a page can pass:
+    pageTitle, pageDescription, ogImage (path or URL), ogType, jsonLd (object or array), noindex.
+  Canonical and language links are built from the current address, so new pages get them for free.
+%>
+<%
+  const ogLocales = { en: 'en_US', cs: 'cs_CZ' };
+  const title = locals.pageTitle || `${site.name} | ${__('title')}`;
+  const rawDescription = locals.pageDescription || __('meta.description');
+  const description = rawDescription.length > 160 ? rawDescription.slice(0, 157).replace(/\s+\S*$/, '') + '...' : rawDescription;
+  const pagePath = (locals.currentPath || '/').replace(/\/+$/, '') || '/';
+  const urlFor = lang => `${site.baseUrl}/${lang}${pagePath === '/' ? '' : pagePath}`;
+  const image = locals.ogImage || site.shareImage;
+  const imageUrl = /^https?:/.test(image) ? image : site.baseUrl + image;
+%>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %></title>
+  <meta name="description" content="<%= description %>">
+  <meta name="author" content="<%= site.name %>">
+  <meta name="color-scheme" content="light dark">
+  <% if (locals.noindex) { %>
+  <meta name="robots" content="noindex, nofollow">
+  <% } else { %>
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <link rel="canonical" href="<%= urlFor(language) %>">
+  <% site.languages.forEach(lang => { %>
+  <link rel="alternate" hreflang="<%= lang %>" href="<%= urlFor(lang) %>">
+  <% }) %>
+  <link rel="alternate" hreflang="x-default" href="<%= urlFor(site.defaultLanguage) %>">
+
+  <%# Link previews (Facebook, LinkedIn, Discord, X, ...). %>
+  <meta property="og:type" content="<%= locals.ogType || 'website' %>">
+  <meta property="og:site_name" content="<%= site.name %>">
+  <meta property="og:title" content="<%= title %>">
+  <meta property="og:description" content="<%= description %>">
+  <meta property="og:url" content="<%= urlFor(language) %>">
+  <meta property="og:image" content="<%= imageUrl %>">
+  <meta property="og:locale" content="<%= ogLocales[language] || language %>">
+  <% site.languages.filter(lang => lang !== language).forEach(lang => { %>
+  <meta property="og:locale:alternate" content="<%= ogLocales[lang] || lang %>">
+  <% }) %>
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="<%= title %>">
+  <meta name="twitter:description" content="<%= description %>">
+  <meta name="twitter:image" content="<%= imageUrl %>">
+  <% if (locals.jsonLd) { %>
+  <script type="application/ld+json"><%- JSON.stringify(jsonLd).replace(/</g, '\\u003c') %></script>
+  <% } %>
+  <% } %>
+
+  <%# Apply the saved or system theme before the page paints, so there is no flash. %>
+  <script>
+    (function () {
+      var saved = null;
+      try { saved = localStorage.getItem('malikweb-theme'); } catch (e) {}
+      var theme = saved || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      document.documentElement.dataset.theme = theme;
+      document.documentElement.classList.add('js');
+    })();
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/css/style.css">
+  <script src="/js/script.js" type="module"></script>
+  <%# Tab icon (dark rounded NM square): PNG sizes, SVG for sharp scaling, ICO for old browsers. %>
+  <link rel="icon" href="/img/favicon-32.png" type="image/png" sizes="32x32">
+  <link rel="icon" href="/img/favicon-16.png" type="image/png" sizes="16x16">
+  <link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="/img/favicon.ico" sizes="48x48">
+  <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="theme-color" content="#fafafa" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0b0a10" media="(prefers-color-scheme: dark)">
+</head>

@@ -1,0 +1,35 @@
+// Scroll reveal: elements with [data-animate] fade up once they enter the viewport.
+// Only hidden when JS is running (html.js), so content is never lost without it.
+.js [data-animate] {
+  opacity: 0;
+
+  // An animation (not a transition) so it never interferes with hover transitions.
+  &.is-visible {
+    opacity: 1;
+    animation: reveal 0.7s var(--ease-out) var(--delay, 0ms) backwards;
+  }
+}
+
+@keyframes reveal {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+}
+
+// Theme switch cross-fade (View Transitions API).
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.35s;
+  animation-timing-function: ease;
+}
+
+@keyframes float {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(3%, -4%) scale(1.06); }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: scale(0.97); }
+  to { opacity: 1; transform: none; }
+}

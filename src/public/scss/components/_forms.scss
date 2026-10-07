@@ -1,0 +1,61 @@
+// Form fields, used by the contact form and the admin page.
+
+.field {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.field__label {
+  font-weight: 600;
+  font-size: 0.9rem;
+
+  small {
+    font-weight: 400;
+    color: var(--text-subtle);
+  }
+}
+
+.field__input {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+  transition: border-color var(--duration) ease, box-shadow var(--duration) ease;
+
+  &:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-soft);
+  }
+}
+
+textarea.field__input {
+  resize: vertical;
+}
+
+.form-status {
+  min-height: 1.5em;
+  font-size: 0.92rem;
+  font-weight: 500;
+
+  &:empty {
+    min-height: 0;
+  }
+
+  &.is-success {
+    color: var(--success);
+  }
+
+  &.is-error {
+    color: var(--danger);
+  }
+
+  &.is-success,
+  &.is-error {
+    animation: fade-in 0.4s var(--ease-out);
+  }
+}
