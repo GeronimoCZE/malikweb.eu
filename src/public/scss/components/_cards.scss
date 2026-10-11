@@ -9,8 +9,7 @@
   transition:
     border-color var(--duration) ease,
     background-color var(--duration) ease,
-    box-shadow 0.4s var(--ease-out),
-    transform 0.4s var(--ease-out);
+    box-shadow 0.4s var(--ease-out);
 
   &__title {
     font-size: 1.12rem;
@@ -24,10 +23,9 @@
   }
 }
 
-// Interactive cards lift slightly on hover.
+// Interactive cards get a stronger border and shadow on hover, without moving.
 a.card:hover,
 .card.skill:hover {
   border-color: var(--border-strong);
   box-shadow: var(--shadow-lg);
-  transform: translateY(-4px);
 }

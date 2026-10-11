@@ -9,24 +9,11 @@
   font-weight: 600;
   line-height: 1.2;
   white-space: nowrap;
-  transition: background-color var(--duration) ease, border-color var(--duration) ease, color var(--duration) ease, transform 0.2s var(--ease-out), box-shadow var(--duration) ease;
+  transition: background-color var(--duration) ease, border-color var(--duration) ease, color var(--duration) ease, box-shadow var(--duration) ease;
 
   .icon {
     width: 18px;
     height: 18px;
-    transition: transform 0.3s var(--ease-out);
-  }
-
-  &:hover {
-    transform: translateY(-2px);
-
-    .icon:last-child:not(:first-child) {
-      transform: translateX(3px);
-    }
-  }
-
-  &:active {
-    transform: translateY(0);
   }
 
   &--primary {
@@ -59,15 +46,7 @@
   font-weight: 500;
   transition: color var(--duration) ease;
 
-  .icon {
-    transition: transform 0.3s var(--ease-out);
-  }
-
   &:hover {
     color: var(--text);
-
-    .icon {
-      transform: translateX(-4px);
-    }
   }
 }
