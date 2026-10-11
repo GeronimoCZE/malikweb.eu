@@ -48,12 +48,11 @@
     font-size: 0.72rem;
     font-weight: 800;
     letter-spacing: -0.04em;
-    transition: transform 0.4s var(--ease-out), color var(--duration) ease;
+    transition: color var(--duration) ease;
   }
 
   &:hover &__mark {
     color: var(--accent);
-    transform: rotate(-8deg) scale(1.05);
   }
 
   @include bp.down(sm) {
@@ -154,16 +153,12 @@
   color: var(--text-muted);
   border: 1px solid var(--border);
   background: var(--surface);
-  transition: color var(--duration) ease, border-color var(--duration) ease, background-color var(--duration) ease, transform 0.2s ease;
+  transition: color var(--duration) ease, border-color var(--duration) ease, background-color var(--duration) ease;
 
   &:hover {
     color: var(--text);
     border-color: var(--border-strong);
     background: var(--surface-hover);
-  }
-
-  &:active {
-    transform: scale(0.94);
   }
 }
 

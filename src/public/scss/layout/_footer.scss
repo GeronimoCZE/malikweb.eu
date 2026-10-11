@@ -20,12 +20,11 @@
     height: 36px;
     border-radius: 50%;
     border: 1px solid var(--border);
-    transition: color var(--duration) ease, border-color var(--duration) ease, transform 0.3s var(--ease-out);
+    transition: color var(--duration) ease, border-color var(--duration) ease;
 
     &:hover {
       color: var(--accent);
       border-color: var(--accent);
-      transform: translateY(-3px);
     }
   }
 }
