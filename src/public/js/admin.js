@@ -1,17 +1,18 @@
-// Admin page: list, create, edit and delete projects through /api/projects,
-// and read contact form messages through /api/messages.
+// Admin page: list, create, edit and delete projects through /api/projects, add them from
+// GitHub repositories, and read contact form messages through /api/messages.
 // The API key is kept in sessionStorage, so it is forgotten when the browser tab closes.
 
 const KEY_STORAGE = 'malikweb-admin-key';
 const { languages } = JSON.parse(document.getElementById('admin-config').textContent);
 
 const $ = id => document.getElementById(id);
-const views = { login: $('login'), list: $('list-view'), editor: $('editor-view'), messages: $('messages-view') };
+const views = { login: $('login'), list: $('list-view'), import: $('import-view'), editor: $('editor-view'), messages: $('messages-view') };
 const form = $('project-form');
 
 let apiKey = sessionStorage.getItem(KEY_STORAGE) || '';
 let projects = [];
 let messages = [];
+let repos = null;        // GitHub repositories, loaded the first time they are needed
 
 // State of the project open in the editor.
 let editing = null;      // the project being edited, or null for a new one
@@ -119,6 +120,73 @@ async function showList() {
 }
 
 $('new-project').addEventListener('click', () => openEditor(null));
+$('import-project').addEventListener('click', () => showImport().catch(err => toast(err.message, true)));
+
+/* ---------- Add from GitHub ---------- */
+
+async function loadRepos() {
+    const data = await api('/github/repos');
+    repos = data.repos || [];
+    $('repo-options').replaceChildren(...repos.map(repo => el('option', { value: repo.repo })));
+}
+
+async function showImport() {
+    show('import');
+    $('repo-status').textContent = 'Loading repositories…';
+    $('repo-list').replaceChildren();
+    try {
+        await loadRepos();
+        renderRepos();
+        $('repo-filter').focus();
+    } catch (err) {
+        $('repo-status').textContent = err.message;
+    }
+}
+
+function renderRepos() {
+    const filter = $('repo-filter').value.trim().toLowerCase();
+    const shown = repos.filter(repo => `${repo.name} ${repo.description}`.toLowerCase().includes(filter));
+
+    $('repo-list').replaceChildren(...shown.map(repo => {
+        const project = projects.find(p => p._id === repo.project);
+        const notes = [repo.fork && 'fork', repo.archived && 'archived'].filter(Boolean).join(', ');
+        return el('li', { class: 'admin__repo' }, [
+            el('div', { class: 'admin__item-body' }, [
+                el('h3', {}, [repo.name, notes ? el('small', { text: notes }) : '']),
+                el('p', { class: 'muted', text: repo.description || 'No description' })
+            ]),
+            project
+                ? el('button', { type: 'button', class: 'btn btn--ghost', text: 'Edit', onclick: () => openEditor(project) })
+                : el('button', { type: 'button', class: 'btn btn--ghost', text: 'Add', onclick: event => importRepo(repo, event.currentTarget) })
+        ]);
+    }));
+    $('repo-status').textContent = repos.length
+        ? (shown.length ? '' : 'No repository matches.')
+        : 'No public repositories found.';
+}
+
+$('repo-filter').addEventListener('input', renderRepos);
+$('cancel-import').addEventListener('click', () => showList().catch(err => toast(err.message, true)));
+
+async function importRepo(repo, button) {
+    button.disabled = true;
+    button.textContent = 'Adding…';
+    try {
+        const { project } = await api('/projects/import', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ repo: repo.repo })
+        });
+        repo.project = project._id;
+        projects.push(project);
+        openEditor(project);
+        toast('Added from GitHub. Check the texts and add the Czech ones.');
+    } catch (err) {
+        toast(err.message, true);
+        button.disabled = false;
+        button.textContent = 'Add';
+    }
+}
 $('cancel-edit').addEventListener('click', () => showList().catch(err => toast(err.message, true)));
 
 /* ---------- Messages ---------- */
@@ -220,6 +288,12 @@ function openEditor(project) {
     $('delete-project').hidden = !project;
 
     form.elements.name.value = project?.name || '';
+    form.elements.github_repo.value = project?.github?.repo || '';
+    form.elements.website.value = project?.website || '';
+    form.elements.download_enabled.checked = Boolean(project?.download?.enabled);
+    form.elements.download_url.value = project?.download?.url || '';
+    setSyncInfo(project);
+    if (!repos) loadRepos().catch(() => {});
     languages.forEach(lang => {
         form.elements[`thumb_${lang}`].value = project?.thumb_description?.[lang] || '';
         form.elements[`desc_${lang}`].value = project?.description?.[lang] || '';
@@ -236,6 +310,27 @@ function openEditor(project) {
     renderGallery();
     show('editor');
 }
+
+function setSyncInfo(project) {
+    const syncedAt = project?.github?.syncedAt;
+    $('sync-row').hidden = !project?.github?.repo;
+    $('synced-at').textContent = syncedAt ? `Last updated ${dateFormat.format(new Date(syncedAt))}` : '';
+}
+
+// Unsaved changes in the editor are replaced by the saved project with the new GitHub data.
+$('sync-project').addEventListener('click', async event => {
+    const button = event.currentTarget;
+    button.disabled = true;
+    try {
+        const { project } = await api(`/projects/${editing._id}/sync`, { method: 'POST' });
+        openEditor(project);
+        toast('Updated from GitHub. Fields you changed here were kept.');
+    } catch (err) {
+        toast(err.message, true);
+    } finally {
+        button.disabled = false;
+    }
+});
 
 function setThumbPreview(src) {
     const img = $('thumb-preview');
@@ -343,7 +438,8 @@ form.addEventListener('submit', async event => {
 
     const name = form.elements.name.value.trim();
     if (!name) return toast('Please fill in a name.', true);
-    if (!editing && !thumbFile) return toast('Please choose a thumbnail image.', true);
+    const repo = form.elements.github_repo.value.trim();
+    if (!editing && !thumbFile && !repo) return toast('Please choose a thumbnail image or a GitHub repository.', true);
 
     const data = new FormData();
     data.append('name', name);
@@ -353,6 +449,10 @@ form.addEventListener('submit', async event => {
     });
     data.append('technologies', JSON.stringify(technologies));
     data.append('links', JSON.stringify(readLinks()));
+    data.append('github_repo', repo);
+    data.append('website', form.elements.website.value.trim());
+    data.append('download_enabled', String(form.elements.download_enabled.checked));
+    data.append('download_url', form.elements.download_url.value.trim());
     if (thumbFile) data.append('thumb_image', thumbFile);
 
     // The gallery in the order shown: existing images by URL, new uploads by their index.
@@ -367,11 +467,12 @@ form.addEventListener('submit', async event => {
     const button = $('save-project');
     button.disabled = true;
     try {
-        await api(editing ? `/projects/${editing._id}` : '/projects', {
+        const result = await api(editing ? `/projects/${editing._id}` : '/projects', {
             method: editing ? 'PUT' : 'POST',
             body: data
         });
-        toast(editing ? 'Project saved.' : 'Project created.');
+        if (result.warning) toast(result.warning, true);
+        else toast(editing ? 'Project saved.' : 'Project created.');
         await showList();
     } catch (err) {
         toast(err.message, true);

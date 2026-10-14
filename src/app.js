@@ -15,6 +15,7 @@ import api from './routes/api.js';
 import { buildSitemap, buildRobots } from './utils/seo.js';
 import { projects, loadProjects } from './data/projects.js';
 import { site } from './content/site.js';
+import { syncAll } from './utils/github.js';
 
 
 const app = express();
@@ -159,6 +160,13 @@ connectDB().then(() => {
             console.error('Failed to fetch projects from the database:', err);
         }
     }, 60000 * 60); // Refresh every hour
+
+    // Projects linked to a GitHub repository pick up changes from there once a day.
+    const updateFromGitHub = () => syncAll()
+        .then(count => count && loadProjects())
+        .catch(err => console.error('Failed to update projects from GitHub:', err));
+    setTimeout(updateFromGitHub, 60000 * 5);
+    setInterval(updateFromGitHub, 60000 * 60 * 24);
 
 }).catch((err) => {
     console.error('Failed to connect to the database:', err);

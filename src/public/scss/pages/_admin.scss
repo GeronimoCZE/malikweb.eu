@@ -211,6 +211,36 @@
   }
 }
 
+// Add from GitHub
+
+.admin__intro {
+  margin-bottom: 16px;
+  max-width: 640px;
+}
+
+.admin__filter {
+  margin-bottom: 16px;
+}
+
+.admin__repos {
+  list-style: none;
+  border-top: 1px solid var(--border);
+}
+
+.admin__repo {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+
+  .admin__item-body small {
+    margin-left: 8px;
+    color: var(--text-subtle);
+    font-weight: 400;
+  }
+}
+
 // Editor
 
 .admin__form {
@@ -272,6 +302,24 @@
     font-size: 1rem;
     line-height: 1;
   }
+}
+
+.admin__check {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+
+  input {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--accent);
+  }
+}
+
+.admin__label {
+  display: block;
+  margin-bottom: 10px;
 }
 
 .admin__links {
