@@ -2,32 +2,21 @@ import express from 'express';
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
-import { fileURLToPath } from 'url';
 import mongoose from 'mongoose';
 import { project_model } from '../models/Project.js';
 import { message_model } from '../models/Message.js';
 import { loadProjects } from '../data/projects.js';
 import { site } from '../content/site.js';
+import { uploadDir, UPLOAD_URL, uniqueFilename, deleteUpload } from '../utils/uploads.js';
+import { isRepoName, listRepos, importRepo, syncProject } from '../utils/github.js';
 const router = express.Router();
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-// go up from routes/ to project root, then into public/uploads
-const uploadDir = path.join(__dirname, '..', 'public', 'uploads/projects');
-const UPLOAD_URL = '/uploads/projects/';
-
-// ensure it exists (multer won't create it for you)
-if (!fs.existsSync(uploadDir)) {
-    fs.mkdirSync(uploadDir, { recursive: true });
-}
 
 export default router;
 
 const storage = multer.diskStorage({
     destination: uploadDir,
     filename(req, file, cb) {
-        cb(null, Date.now() + '-' + Math.random().toString(36).slice(2) + path.extname(file.originalname).toLowerCase());
+        cb(null, uniqueFilename(path.extname(file.originalname).toLowerCase()));
     }
 });
 
@@ -91,13 +80,6 @@ function removeUploaded(req) {
     uploadedFiles(req).forEach(file => fs.promises.unlink(file.path).catch(() => {}));
 }
 
-// Only ever deletes files inside public/uploads/projects.
-function deleteUpload(url) {
-    if (typeof url !== 'string' || !url.startsWith(UPLOAD_URL)) return;
-    const file = path.join(uploadDir, path.basename(url));
-    fs.promises.unlink(file).catch(() => {});
-}
-
 function parseJSON(value, fallback) {
     if (value === undefined || value === '') return fallback;
     try {
@@ -115,10 +97,26 @@ function cleanAlt(alt = {}) {
     return Object.fromEntries(site.languages.map(lang => [lang, String(alt?.[lang] || '').trim()]));
 }
 
+// Web addresses and paths on this site only, so a link can never run a script.
+// "example.com" becomes "https://example.com".
+function cleanUrl(value) {
+    const url = String(value || '').trim();
+    if (!url || /^https?:\/\//i.test(url) || /^\/(?!\/)/.test(url)) return url;
+    return /^[a-z][\w+.-]*:|^\/\//i.test(url) ? '' : `https://${url}`;
+}
+
 function cleanLinks(links) {
     return (Array.isArray(links) ? links : [])
-        .map(link => ({ title: String(link?.title || '').trim(), url: String(link?.url || '').trim() }))
+        .map(link => ({ title: String(link?.title || '').trim(), url: cleanUrl(link?.url) }))
         .filter(link => link.title && link.url);
+}
+
+function cleanRepo(value) {
+    const repo = String(value || '').trim()
+        .replace(/^https?:\/\/github\.com\//i, '')
+        .replace(/\.git$|\/$/g, '');
+    if (repo && !isRepoName(repo)) throw new Error('Write the GitHub repository as owner/name');
+    return repo;
 }
 
 function cleanTechnologies(list) {
@@ -138,7 +136,12 @@ async function projectFields(req, excludeId) {
         thumb_description: localized(req.body, 'thumb'),
         description: localized(req.body, 'desc'),
         technologies: cleanTechnologies(parseJSON(req.body.technologies, [])),
-        links: cleanLinks(parseJSON(req.body.links, []))
+        links: cleanLinks(parseJSON(req.body.links, [])),
+        website: cleanUrl(req.body.website),
+        download: {
+            enabled: req.body.download_enabled === 'true',
+            url: cleanUrl(req.body.download_url)
+        }
     };
 }
 
@@ -153,14 +156,14 @@ function buildGallery(req, existing = []) {
         return [...existing, ...uploads.map(url => ({ url, alt: cleanAlt() }))];
     }
 
-    const known = existing.map(img => img.url);
     return layout
         .map(entry => {
             if (Number.isInteger(entry?.new) && uploads[entry.new]) {
                 return { url: uploads[entry.new], alt: cleanAlt(entry.alt) };
             }
-            if (known.includes(entry?.url)) {
-                return { url: entry.url, alt: cleanAlt(entry.alt) };
+            const known = existing.find(img => img.url === entry?.url);
+            if (known) {
+                return { url: known.url, source: known.source, alt: cleanAlt(entry.alt) };
             }
             return null;
         })
@@ -196,17 +199,64 @@ router.get('/admin/check', requireApiKey, (req, res) => {
     res.json({ ok: true });
 });
 
+// Repositories that can be added as projects, with the project each one is already used by.
+router.get('/github/repos', requireApiKey, async (req, res) => {
+    try {
+        const [repos, linked] = await Promise.all([
+            listRepos(),
+            project_model.find({ 'github.repo': { $nin: [null, ''] } }, { name: 1, 'github.repo': 1 })
+        ]);
+        const projectFor = repo => linked.find(p => p.github.repo.toLowerCase() === repo.toLowerCase());
+        res.json({
+            account: site.github,
+            repos: repos.map(repo => ({ ...repo, project: projectFor(repo.repo)?._id || null }))
+        });
+    } catch (err) {
+        res.status(502).json({ message: err.message });
+    }
+});
+
+// Creates a project from a repository: { "repo": "owner/name" }.
+router.post('/projects/import', requireApiKey, async (req, res) => {
+    try {
+        const doc = await importRepo(cleanRepo(req.body?.repo));
+        await afterChange();
+        res.status(201).json({ message: 'Created', project: doc });
+    } catch (err) {
+        console.error(err);
+        res.status(400).json({ message: err.message || 'Import failed' });
+    }
+});
+
+// Pulls the latest data from the linked repository. Fields edited on the admin page are kept.
+router.post('/projects/:id/sync', requireApiKey, async (req, res) => {
+    try {
+        const project = mongoose.isValidObjectId(req.params.id) && await project_model.findById(req.params.id);
+        if (!project) return res.status(404).json({ message: 'Project not found' });
+
+        const doc = await syncProject(project);
+        await afterChange();
+        res.json({ message: 'Updated', project: doc });
+    } catch (err) {
+        console.error(err);
+        res.status(400).json({ message: err.message || 'Update failed' });
+    }
+});
+
 router.post('/projects', withUploads(async (req, res) => {
     const thumb = req.files?.thumb_image?.[0];
-    if (!thumb) throw new Error('A thumbnail image is required');
+    const repo = cleanRepo(req.body.github_repo);
+    if (!thumb && !repo) throw new Error('A thumbnail image is required');
 
     const project = new project_model({
         ...(await projectFields(req)),
-        thumb_image: UPLOAD_URL + thumb.filename,
-        images: buildGallery(req)
+        thumb_image: thumb ? UPLOAD_URL + thumb.filename : undefined,
+        images: buildGallery(req),
+        github: { repo }
     });
 
-    const doc = await project.save();
+    // With a repository, empty fields (the thumbnail too) are filled in from GitHub.
+    const doc = repo ? await syncProject(project) : await project.save();
     discardUnusedUploads(req, doc.images);
     await afterChange();
     res.status(201).json({ message: 'Created', project: doc });
@@ -222,6 +272,11 @@ router.put('/projects/:id', withUploads(async (req, res) => {
 
     Object.assign(project, await projectFields(req, project._id));
 
+    // Linking another repository starts over, so its data fills the empty fields.
+    const repo = cleanRepo(req.body.github_repo);
+    const repoChanged = repo !== (project.github?.repo || '');
+    if (repoChanged) project.set('github', { repo });
+
     const previous = project.images.map(img => img.toObject());
     project.images = buildGallery(req, previous);
     const removed = previous
@@ -235,15 +290,24 @@ router.put('/projects/:id', withUploads(async (req, res) => {
         project.thumb_image = UPLOAD_URL + thumb.filename;
     }
 
-    const doc = await project.save();
+    let doc = await project.save();
 
     // Only remove old files once the database change has gone through.
     discardUnusedUploads(req, doc.images);
     removed.forEach(deleteUpload);
     if (oldThumb) deleteUpload(oldThumb);
 
+    // The project is saved either way; a GitHub problem only shows up as a warning.
+    let warning;
+    if (repo && repoChanged) {
+        doc = await syncProject(doc).catch(err => {
+            warning = `Saved, but GitHub could not be read: ${err.message}`;
+            return doc;
+        });
+    }
+
     await afterChange();
-    res.json({ message: 'Saved', project: doc });
+    res.json({ message: 'Saved', warning, project: doc });
 }));
 
 router.delete('/projects/:id', requireApiKey, async (req, res) => {

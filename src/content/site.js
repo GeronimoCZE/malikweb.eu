@@ -23,6 +23,9 @@ export const site = {
         phone: '+420 737 967 301'
     },
 
+    // GitHub account the admin page lists repositories from when adding a project.
+    github: 'GeronimoCZE',
+
     // `icon` must be a name from src/views/partials/icon.ejs.
     social: [
         { label: 'GitHub', icon: 'github', url: 'https://github.com/GeronimoCZE' },
