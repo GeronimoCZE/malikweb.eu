@@ -4,9 +4,9 @@
   --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
 
-  --radius-sm: 8px;
-  --radius: 14px;
-  --radius-lg: 20px;
+  --radius-sm: 6px;
+  --radius: 8px;
+  --radius-lg: 10px;
 
   --container: 1120px;
   --header-height: 68px;
@@ -15,7 +15,8 @@
   --duration: 0.25s;
 
   // Light theme (default)
-  // Page is a soft grey so the white cards stand out; borders and muted text are dark enough to read easily.
+  // Page is a soft grey so the white boxes stand out; borders and muted text are dark enough to read easily.
+  // No shadows: boxes are separated by colour and a single border, and only where grouping matters.
   --bg: #f1f0f5;
   --bg-elevated: #ffffff;
   --surface: #ffffff;
@@ -30,10 +31,6 @@
   --accent-contrast: #ffffff;
   --accent-soft: rgba(106, 43, 212, 0.11);
   --header-bg: rgba(241, 240, 245, 0.85);
-  --shadow: 0 1px 2px rgba(22, 20, 31, 0.06), 0 8px 24px -12px rgba(22, 20, 31, 0.18);
-  --shadow-lg: 0 2px 4px rgba(22, 20, 31, 0.06), 0 24px 48px -20px rgba(22, 20, 31, 0.3);
-  --glow-1: rgba(135, 73, 235, 0.18);
-  --glow-2: rgba(46, 156, 219, 0.12);
   --success: #1f8a4c;
   --danger: #d93a3a;
 
@@ -56,10 +53,6 @@
   --accent-contrast: #14101f;
   --accent-soft: rgba(166, 130, 245, 0.12);
   --header-bg: rgba(11, 10, 16, 0.7);
-  --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px -12px rgba(0, 0, 0, 0.6);
-  --shadow-lg: 0 2px 4px rgba(0, 0, 0, 0.3), 0 24px 48px -20px rgba(0, 0, 0, 0.8);
-  --glow-1: rgba(135, 73, 235, 0.28);
-  --glow-2: rgba(46, 156, 219, 0.14);
   --success: #4cc985;
   --danger: #f06a6a;
 

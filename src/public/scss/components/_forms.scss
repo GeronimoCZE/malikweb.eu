@@ -24,12 +24,11 @@
   background: var(--bg);
   color: var(--text);
   font: inherit;
-  transition: border-color var(--duration) ease, box-shadow var(--duration) ease;
+  transition: border-color var(--duration) ease;
 
   &:focus {
     outline: none;
     border-color: var(--accent);
-    box-shadow: 0 0 0 3px var(--accent-soft);
   }
 }
 

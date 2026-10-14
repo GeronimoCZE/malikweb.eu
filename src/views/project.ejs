@@ -23,8 +23,9 @@
         <% } %>
         <% if (project.links?.length) { %>
           <div class="project-page__links" data-animate>
-            <% project.links.forEach(link => { %>
-              <a href="<%= link.url %>" target="_blank" rel="noopener noreferrer" class="btn btn--primary">
+            <%# Only the first link is the primary button; the rest stay secondary. %>
+            <% project.links.forEach((link, i) => { %>
+              <a href="<%= link.url %>" target="_blank" rel="noopener noreferrer" class="btn <%= i === 0 ? 'btn--primary' : 'btn--ghost' %>">
                 <%= link.title %>
                 <%- include('partials/icon', { name: 'external' }) %>
               </a>
@@ -43,7 +44,7 @@
         </section>
 
         <% if (project.technologies?.length) { %>
-          <aside class="card project-page__tech" data-animate>
+          <aside class="project-page__tech" data-animate>
             <h2 class="card__title"><%= __('projects.technologies') %></h2>
             <ul class="tags">
               <% project.technologies.forEach(tech => { %>

@@ -111,7 +111,7 @@ async function showList() {
         ]),
         el('div', { class: 'admin__row' }, [
             el('a', { class: 'btn btn--ghost', href: `/${languages[0]}/projects/${encodeURIComponent(project.name)}`, target: '_blank', text: 'View' }),
-            el('button', { type: 'button', class: 'btn btn--primary', text: 'Edit', onclick: () => openEditor(project) })
+            el('button', { type: 'button', class: 'btn btn--ghost', text: 'Edit', onclick: () => openEditor(project) })
         ])
     ])));
     $('empty-list').hidden = projects.length > 0;
@@ -156,7 +156,7 @@ function renderMessages() {
             ]),
             el('p', { class: 'admin__message-text', text: item.message }),
             el('div', { class: 'admin__row' }, [
-                el('a', { class: 'btn btn--primary', href: reply, text: 'Reply', onclick: () => { if (!item.read) setRead(item, true); } }),
+                el('a', { class: item.read ? 'btn btn--ghost' : 'btn btn--primary', href: reply, text: 'Reply', onclick: () => { if (!item.read) setRead(item, true); } }),
                 el('button', { type: 'button', class: 'btn btn--ghost', text: item.read ? 'Mark as unread' : 'Mark as read', onclick: () => setRead(item, !item.read) }),
                 el('button', { type: 'button', class: 'btn btn--ghost admin__danger', text: 'Delete', onclick: () => deleteMessage(item) })
             ])
