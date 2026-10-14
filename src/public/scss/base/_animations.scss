@@ -1,4 +1,4 @@
-// Scroll reveal: elements with [data-animate] fade up once they enter the viewport.
+// Scroll reveal: elements with [data-animate] fade in once they enter the viewport.
 // Only hidden when JS is running (html.js), so content is never lost without it.
 .js [data-animate] {
   opacity: 0;
@@ -13,7 +13,6 @@
 @keyframes reveal {
   from {
     opacity: 0;
-    transform: translateY(18px);
   }
 }
 
@@ -24,12 +23,7 @@
   animation-timing-function: ease;
 }
 
-@keyframes float {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(3%, -4%) scale(1.06); }
-}
-
 @keyframes fade-in {
-  from { opacity: 0; transform: scale(0.97); }
-  to { opacity: 1; transform: none; }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }

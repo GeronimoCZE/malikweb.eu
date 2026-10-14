@@ -6,7 +6,6 @@
 
   <main>
     <section class="hero">
-      <div class="hero__glow" aria-hidden="true"></div>
       <div class="container hero__inner">
         <p class="hero__eyebrow" data-animate>
           <%- include('partials/icon', { name: 'pin' }) %>
@@ -15,13 +14,13 @@
         <h1 class="hero__title" data-animate><%= site.name %></h1>
         <p class="hero__subtitle" data-animate><%= __('title') %></p>
         <div class="hero__actions" data-animate>
-          <a href="<%= site.resume %>" target="_blank" class="btn btn--primary">
-            <%- include('partials/icon', { name: 'file' }) %>
-            <%= __('main.about.resume') %>
-          </a>
-          <a href="#contact" class="btn btn--ghost">
+          <a href="#contact" class="btn btn--primary">
             <%= __('main.contact.title') %>
             <%- include('partials/icon', { name: 'arrowRight' }) %>
+          </a>
+          <a href="<%= site.resume %>" target="_blank" class="btn btn--ghost">
+            <%- include('partials/icon', { name: 'file' }) %>
+            <%= __('main.about.resume') %>
           </a>
         </div>
         <div class="hero__social" data-animate>
@@ -53,9 +52,9 @@
           <span class="section__index">02</span>
           <h2 class="section__title"><%= __('main.skills.title') %></h2>
         </header>
-        <div class="grid grid--3">
+        <div class="grid grid--3 grid--open">
           <% __('main.skills.skills', { returnObjects: true }).forEach((skill, i) => { %>
-            <article class="card skill" data-animate style="--delay: <%= i * 60 %>ms">
+            <article class="skill" data-animate style="--delay: <%= i * 60 %>ms">
               <span class="skill__number"><%= String(i + 1).padStart(2, '0') %></span>
               <h3 class="card__title"><%= skill.name %></h3>
               <p class="card__text"><%= skill.description %></p>
@@ -108,9 +107,9 @@
           <h2 class="section__title"><%= __('main.services.title') %></h2>
         </header>
         <p class="section__lead" data-animate><%= __('main.services.text') %></p>
-        <div class="grid grid--3">
+        <div class="grid grid--3 grid--open">
           <% __('main.services.items', { returnObjects: true }).forEach((service, i) => { %>
-            <article class="card service" data-animate style="--delay: <%= i * 80 %>ms">
+            <article class="service" data-animate style="--delay: <%= i * 80 %>ms">
               <span class="service__icon"><%- include('partials/icon', { name: service.icon }) %></span>
               <h3 class="card__title"><%= service.name %></h3>
               <p class="card__text"><%= service.description %></p>
@@ -136,7 +135,7 @@
           <h2 class="section__title"><%= __('main.contact.title') %></h2>
         </header>
         <div class="contact">
-          <div class="contact__info card" data-animate>
+          <div class="contact__info" data-animate>
             <p class="contact__text"><%= __('main.contact.text') %></p>
             <h3 class="contact__subtitle"><%= __('main.contact.form.direct') %></h3>
             <ul class="contact__list">
@@ -151,7 +150,7 @@
             </ul>
             <div class="contact__links">
               <% site.social.forEach(link => { %>
-                <a href="<%= link.url %>" target="_blank" rel="noopener noreferrer" class="btn btn--ghost">
+                <a href="<%= link.url %>" target="_blank" rel="noopener noreferrer">
                   <%- include('partials/icon', { name: link.icon }) %> <%= link.label %>
                 </a>
               <% }) %>

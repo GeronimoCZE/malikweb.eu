@@ -12,4 +12,9 @@
   &--3 {
     grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
   }
+
+  // Unboxed items (skills, services) need more air between them instead of borders.
+  &--open {
+    gap: 48px 40px;
+  }
 }

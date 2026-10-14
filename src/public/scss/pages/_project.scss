@@ -33,7 +33,6 @@
     overflow: hidden;
     border: 1px solid var(--border);
     border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-lg);
     background: var(--surface);
     --delay: 220ms;
 
@@ -63,7 +62,14 @@
   &__tech {
     position: sticky;
     top: calc(var(--header-height) + 24px);
-    padding: 24px;
+    padding-left: 24px;
+    border-left: 1px solid var(--border);
+
+    @include bp.down(md) {
+      position: static;
+      padding-left: 0;
+      border-left: 0;
+    }
 
     .card__title {
       font-size: 0.95rem;

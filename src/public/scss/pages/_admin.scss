@@ -118,7 +118,7 @@
 
   &.is-unread {
     border-color: var(--accent);
-    box-shadow: 0 0 0 3px var(--accent-soft), var(--shadow);
+    border-left-width: 4px;
   }
 
   h3 {
@@ -450,15 +450,13 @@
   background: var(--text);
   color: var(--bg);
   font-weight: 500;
-  box-shadow: var(--shadow-lg);
   opacity: 0;
   pointer-events: none;
-  transform: translate(-50%, 12px);
-  transition: opacity var(--duration) ease, transform 0.3s var(--ease-out);
+  transform: translateX(-50%);
+  transition: opacity var(--duration) ease;
 
   &.is-visible {
     opacity: 1;
-    transform: translate(-50%, 0);
   }
 
   &.is-error {

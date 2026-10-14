@@ -3,13 +3,13 @@
   align-items: center;
   gap: 8px;
   padding: 11px 20px;
-  border-radius: 999px;
+  border-radius: var(--radius-sm);
   border: 1px solid transparent;
   font-size: 0.95rem;
   font-weight: 600;
   line-height: 1.2;
   white-space: nowrap;
-  transition: background-color var(--duration) ease, border-color var(--duration) ease, color var(--duration) ease, box-shadow var(--duration) ease;
+  transition: background-color var(--duration) ease, border-color var(--duration) ease, color var(--duration) ease;
 
   .icon {
     width: 18px;
@@ -19,15 +19,15 @@
   &--primary {
     background: var(--accent);
     color: var(--accent-contrast);
-    box-shadow: 0 8px 20px -8px var(--accent);
 
     &:hover {
       background: var(--accent-hover);
     }
   }
 
+  // Secondary actions: a border so they still read as buttons, but no fill competing with the primary one.
   &--ghost {
-    background: var(--surface);
+    background: transparent;
     border-color: var(--border);
     color: var(--text);
 
