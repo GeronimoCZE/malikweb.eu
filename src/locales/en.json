@@ -118,7 +118,9 @@
 	},
 	"projects": {
 		"technologies": "Technologies used in this project",
-		"gallery": "Gallery"
+		"gallery": "Gallery",
+		"download": "Download",
+		"website": "Website"
 	},
 	"footer": {
 		"rights": "All rights reserved."

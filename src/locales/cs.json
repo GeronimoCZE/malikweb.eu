@@ -121,7 +121,9 @@
 	},
 	"projects": {
 		"technologies": "Technologie použité v tomto projektu",
-		"gallery": "Galerie"
+		"gallery": "Galerie",
+		"download": "Stáhnout",
+		"website": "Web"
 	},
 	"footer": {
 		"rights": "Všechna práva vyhrazena."

@@ -21,12 +21,22 @@
         <% if (project.thumb_description) { %>
           <p class="project-page__lead" data-animate><%= project.thumb_description %></p>
         <% } %>
-        <% if (project.links?.length) { %>
+        <%
+          // The download (when switched on) comes first and is the main button, then the website,
+          // the GitHub repository and any extra links.
+          const actions = [
+            project.download?.enabled && project.download.url && { title: __('projects.download'), url: project.download.url, icon: 'download' },
+            project.website && { title: __('projects.website'), url: project.website, icon: 'external' },
+            project.github?.repo && { title: 'GitHub', url: `https://github.com/${project.github.repo}`, icon: 'github' },
+            ...(project.links || []).map(link => ({ ...link, icon: 'external' }))
+          ].filter(Boolean);
+        %>
+        <% if (actions.length) { %>
           <div class="project-page__links" data-animate>
-            <% project.links.forEach(link => { %>
-              <a href="<%= link.url %>" target="_blank" rel="noopener noreferrer" class="btn btn--primary">
-                <%= link.title %>
-                <%- include('partials/icon', { name: 'external' }) %>
+            <% actions.forEach((action, i) => { %>
+              <a href="<%= action.url %>" target="_blank" rel="noopener noreferrer" class="btn <%= i === 0 ? 'btn--primary' : 'btn--ghost' %>">
+                <%= action.title %>
+                <%- include('partials/icon', { name: action.icon }) %>
               </a>
             <% }) %>
           </div>

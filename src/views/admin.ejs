@@ -27,10 +27,25 @@
     <section id="list-view" hidden>
       <header class="admin__head">
         <h1 class="admin__title">Projects</h1>
-        <button type="button" class="btn btn--primary" id="new-project">+ New project</button>
+        <div class="admin__row">
+          <button type="button" class="btn btn--ghost" id="new-project">Start empty</button>
+          <button type="button" class="btn btn--primary" id="import-project">Add from GitHub</button>
+        </div>
       </header>
       <ul class="admin__list" id="project-list"></ul>
       <p class="muted" id="empty-list" hidden>No projects yet. Add your first one.</p>
+    </section>
+
+    <%# Pick a GitHub repository to turn into a project. %>
+    <section id="import-view" hidden>
+      <header class="admin__head">
+        <h1 class="admin__title">Add from GitHub</h1>
+        <button type="button" class="btn btn--ghost" id="cancel-import">Back to list</button>
+      </header>
+      <p class="muted admin__intro">The description, README text and pictures, technologies, website and latest release are filled in for you. You can change anything afterwards, and the project keeps up with the repository once a day.</p>
+      <input class="field__input admin__filter" id="repo-filter" type="search" placeholder="Filter repositories" aria-label="Filter repositories">
+      <ul class="admin__repos" id="repo-list"></ul>
+      <p class="muted" id="repo-status"></p>
     </section>
 
     <%# Messages sent through the contact form on the home page. %>
@@ -71,6 +86,19 @@
         </div>
 
         <div class="card admin__card">
+          <h2 class="admin__subtitle">GitHub</h2>
+          <label class="field">
+            <span class="field__label">Repository <small>(empty fields below are filled in from it)</small></span>
+            <input class="field__input" name="github_repo" list="repo-options" placeholder="<%= site.github %>/repository" autocomplete="off">
+            <datalist id="repo-options"></datalist>
+          </label>
+          <div class="admin__row" id="sync-row" hidden>
+            <button type="button" class="btn btn--ghost" id="sync-project">Update from GitHub</button>
+            <span class="muted" id="synced-at"></span>
+          </div>
+        </div>
+
+        <div class="card admin__card">
           <h2 class="admin__subtitle">Texts</h2>
           <% site.languages.forEach(lang => { %>
             <div class="admin__lang">
@@ -94,7 +122,20 @@
         </div>
 
         <div class="card admin__card">
-          <h2 class="admin__subtitle">Links</h2>
+          <h2 class="admin__subtitle">Buttons</h2>
+          <p class="muted admin__intro">The project page shows GitHub and the website when they are set.</p>
+          <label class="field">
+            <span class="field__label">Website</span>
+            <input class="field__input" name="website" type="url" placeholder="https://…">
+          </label>
+          <div class="field">
+            <label class="admin__check">
+              <input type="checkbox" name="download_enabled">
+              <span class="field__label">Show a download button</span>
+            </label>
+            <input class="field__input" name="download_url" placeholder="https://… (the latest GitHub release is filled in)" aria-label="Download link">
+          </div>
+          <span class="field__label admin__label">Other links</span>
           <div id="link-list" class="admin__links"></div>
           <button type="button" class="btn btn--ghost" id="add-link">+ Add link</button>
         </div>
