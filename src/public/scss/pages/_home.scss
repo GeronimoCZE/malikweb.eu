@@ -359,3 +359,26 @@
     }
   }
 }
+
+.contact__value {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px 12px;
+}
+
+// "Copied to clipboard" shown next to the email or phone for a moment after a click.
+.copy-note {
+  color: var(--success);
+  font-size: 0.85rem;
+  font-weight: 500;
+
+  &:not(:empty) {
+    animation: fade-in 0.3s var(--ease-out);
+  }
+
+  &.is-error {
+    color: var(--text-muted);
+  }
+}
