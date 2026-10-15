@@ -1,0 +1,79 @@
+<%#
+  Admin bar, shown on every page while signed in as admin (like the WordPress toolbar).
+  Visitors never get it: `admin` is only set when the login cookie is valid.
+%>
+<% if (locals.admin) {
+  const adminUrl = `/${language}/admin`;
+  const ago = date => {
+    const minutes = Math.round((Date.now() - new Date(date)) / 60000);
+    if (minutes < 1) return 'just now';
+    if (minutes < 60) return `${minutes} min ago`;
+    if (minutes < 60 * 24) return `${Math.round(minutes / 60)} h ago`;
+    return `${Math.round(minutes / 60 / 24)} d ago`;
+  };
+%>
+<nav class="admin-bar" id="admin-bar" aria-label="Admin">
+  <div class="admin-bar__inner">
+    <a href="<%= adminUrl %>" class="admin-bar__item admin-bar__home<%= locals.adminPage ? ' is-current' : '' %>">
+      <%- include('icon', { name: 'grid' }) %>
+      <span class="admin-bar__label">Admin</span>
+    </a>
+
+    <details class="admin-bar__menu">
+      <summary class="admin-bar__item" aria-label="Messages, <%= admin.unread %> unread">
+        <%- include('icon', { name: 'inbox' }) %>
+        <span class="admin-bar__label">Messages</span>
+        <span class="admin-bar__count" data-admin-unread <%= admin.unread ? '' : 'hidden' %>><%= admin.unread %></span>
+      </summary>
+      <div class="admin-bar__panel">
+        <p class="admin-bar__panel-title" data-admin-unread-text><%= admin.unread ? `${admin.unread} unread` : 'No unread messages' %></p>
+        <% if (admin.latest.length) { %>
+          <ul class="admin-bar__messages">
+            <% admin.latest.forEach(item => { %>
+              <li>
+                <a href="<%= adminUrl %>#messages">
+                  <strong><%= item.subject %></strong>
+                  <span><%= item.email %> · <%= ago(item.createdAt) %></span>
+                </a>
+              </li>
+            <% }) %>
+          </ul>
+        <% } %>
+        <a href="<%= adminUrl %>#messages" class="admin-bar__panel-link">All messages</a>
+      </div>
+    </details>
+
+    <details class="admin-bar__menu">
+      <summary class="admin-bar__item">
+        <%- include('icon', { name: 'plus' }) %>
+        <span class="admin-bar__label">New</span>
+      </summary>
+      <div class="admin-bar__panel admin-bar__panel--narrow">
+        <a href="<%= adminUrl %>#import" class="admin-bar__panel-link">Project from GitHub</a>
+        <a href="<%= adminUrl %>#new" class="admin-bar__panel-link">Empty project</a>
+      </div>
+    </details>
+
+    <% if (locals.project && project._id) { %>
+      <a href="<%= adminUrl %>#edit=<%= project._id %>" class="admin-bar__item admin-bar__edit">
+        <%- include('icon', { name: 'edit' }) %>
+        <span>Edit project</span>
+      </a>
+    <% } else if (locals.adminPage) { %>
+      <a href="/<%= language %>" class="admin-bar__item">
+        <%- include('icon', { name: 'external' }) %>
+        <span class="admin-bar__label">View site</span>
+      </a>
+    <% } %>
+
+    <form method="post" action="/api/admin/logout" class="admin-bar__logout" data-admin-logout>
+      <input type="hidden" name="back" value="/<%= language %><%= currentPath === '/' ? '' : currentPath %>">
+      <button type="submit" class="admin-bar__item" aria-label="Log out">
+        <span class="admin-bar__label">Log out</span>
+        <%- include('icon', { name: 'logout' }) %>
+      </button>
+    </form>
+  </div>
+</nav>
+<script src="/js/admin-bar.js" type="module"></script>
+<% } %>

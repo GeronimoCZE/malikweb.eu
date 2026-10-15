@@ -13,9 +13,10 @@ router.get('/', (req, res) => {
     res.render('index', { projects: localizedProjects, jsonLd: homeSchema(lang, res.__), contactStatus: req.query.contact });
 });
 
-// Admin page for adding, editing and deleting projects. Changes need the API key.
+// Admin page for adding, editing and deleting projects and reading messages. Needs the admin login.
 router.get('/admin', (req, res) => {
-    res.render('admin');
+    res.set('Cache-Control', 'private, no-store');
+    res.render('admin', { adminPage: true });
 });
 
 // Old address of the "create project" form.
