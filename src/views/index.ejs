@@ -138,14 +138,20 @@
           <div class="contact__info" data-animate>
             <p class="contact__text"><%= __('main.contact.text') %></p>
             <h3 class="contact__subtitle"><%= __('main.contact.form.direct') %></h3>
-            <ul class="contact__list">
+            <ul class="contact__list" data-copy-messages="<%= JSON.stringify({ copied: __('helpers.copied'), manual: __('helpers.copyManual'), title: __('helpers.copyTitle') }) %>">
               <li>
                 <span class="contact__label"><%- include('partials/icon', { name: 'mail' }) %><%= __('main.contact.email') %></span>
-                <button type="button" class="reveal" data-reveal="email" data-value="<%= Buffer.from(site.contact.email).toString('base64') %>"><%= __('helpers.reveal') %></button>
+                <span class="contact__value">
+                  <span class="copy-note" role="status" aria-live="polite"></span>
+                  <button type="button" class="reveal" data-reveal="email" data-value="<%= Buffer.from(site.contact.email).toString('base64') %>"><%= __('helpers.reveal') %></button>
+                </span>
               </li>
               <li>
                 <span class="contact__label"><%- include('partials/icon', { name: 'phone' }) %><%= __('main.contact.phone') %></span>
-                <button type="button" class="reveal" data-reveal="phone" data-value="<%= Buffer.from(site.contact.phone).toString('base64') %>"><%= __('helpers.reveal') %></button>
+                <span class="contact__value">
+                  <span class="copy-note" role="status" aria-live="polite"></span>
+                  <button type="button" class="reveal" data-reveal="phone" data-value="<%= Buffer.from(site.contact.phone).toString('base64') %>"><%= __('helpers.reveal') %></button>
+                </span>
               </li>
             </ul>
             <div class="contact__links">

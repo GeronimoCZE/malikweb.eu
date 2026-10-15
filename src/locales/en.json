@@ -127,6 +127,9 @@
 	},
 	"helpers": {
 		"reveal": "reveal",
+		"copied": "Copied to clipboard",
+		"copyManual": "Press Ctrl+C to copy",
+		"copyTitle": "Click to copy",
 		"loading": "Loading the data"
 	},
 	"notFound": {

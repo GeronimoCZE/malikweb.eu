@@ -93,20 +93,61 @@ function initAnimations() {
 
 /* ---------- Contact reveal ---------- */
 
+// Clicking the email or phone reveals it and copies it to the clipboard instead of opening an app.
 function initReveal() {
-    document.querySelectorAll('[data-reveal]').forEach(button => {
-        button.addEventListener('click', () => {
-            // The value comes base64-encoded from src/content/site.js, so it is not plain text in the HTML.
-            const type = button.dataset.reveal;
-            const value = new TextDecoder().decode(Uint8Array.from(atob(button.dataset.value), c => c.charCodeAt(0)));
-            const link = document.createElement('a');
+    const list = document.querySelector('[data-copy-messages]');
+    if (!list) return;
 
-            link.className = 'reveal is-revealed';
-            link.textContent = value;
-            link.href = type === 'email' ? `mailto:${value}` : `tel:${value.replace(/\s/g, '')}`;
-            button.replaceWith(link);
-        }, { once: true });
+    const texts = JSON.parse(list.dataset.copyMessages);
+
+    list.querySelectorAll('[data-reveal]').forEach(button => {
+        const note = button.parentElement.querySelector('.copy-note');
+        let timer;
+
+        button.addEventListener('click', async () => {
+            if (!button.classList.contains('is-revealed')) {
+                // The value comes base64-encoded from src/content/site.js, so it is not plain text in the HTML.
+                const value = new TextDecoder().decode(Uint8Array.from(atob(button.dataset.value), c => c.charCodeAt(0)));
+                button.textContent = value;
+                button.title = texts.title;
+                button.classList.add('is-revealed');
+            }
+
+            const copied = await copyText(button.textContent);
+            if (!copied) selectText(button);
+
+            note.textContent = copied ? texts.copied : texts.manual;
+            note.classList.toggle('is-error', !copied);
+            clearTimeout(timer);
+            timer = setTimeout(() => { note.textContent = ''; }, 2500);
+        });
     });
+}
+
+async function copyText(text) {
+    try {
+        await navigator.clipboard.writeText(text);
+        return true;
+    } catch {
+        // Older browsers, or the page served without HTTPS.
+        const field = document.createElement('textarea');
+        field.value = text;
+        field.setAttribute('readonly', '');
+        field.style.cssText = 'position: fixed; opacity: 0;';
+        document.body.append(field);
+        field.select();
+        let ok = false;
+        try { ok = document.execCommand('copy'); } catch { /* not supported */ }
+        field.remove();
+        return ok;
+    }
+}
+
+function selectText(element) {
+    const range = document.createRange();
+    range.selectNodeContents(element);
+    window.getSelection().removeAllRanges();
+    window.getSelection().addRange(range);
 }
 
 /* ---------- Contact form ---------- */
