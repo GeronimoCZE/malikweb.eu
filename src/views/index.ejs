@@ -73,6 +73,13 @@
         <% if (projects.length) { %>
           <div class="grid grid--3">
             <% projects.forEach((project, i) => { %>
+              <% if (locals.admin) { %>
+                <%# Admin only: the card gets an Edit link on top of it. %>
+                <div class="admin-editable">
+                  <a href="/<%= language %>/admin#edit=<%= project._id %>" class="admin-editable__link">
+                    <%- include('partials/icon', { name: 'edit' }) %> Edit
+                  </a>
+              <% } %>
               <a href="/<%= language %>/projects/<%= encodeURIComponent(project.name) %>" class="card project-card" data-animate style="--delay: <%= i * 60 %>ms">
                 <div class="project-card__media">
                   <img src="<%= project.thumb_image %>" alt="" loading="lazy">
@@ -92,6 +99,7 @@
                   <% } %>
                 </div>
               </a>
+              <% if (locals.admin) { %></div><% } %>
             <% }) %>
           </div>
         <% } else { %>

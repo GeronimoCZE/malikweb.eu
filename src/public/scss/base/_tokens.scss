@@ -10,6 +10,7 @@
 
   --container: 1120px;
   --header-height: 68px;
+  --admin-bar-height: 40px;
 
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --duration: 0.25s;
@@ -33,6 +34,14 @@
   --header-bg: rgba(241, 240, 245, 0.85);
   --success: #1f8a4c;
   --danger: #d93a3a;
+
+  // Admin bar: the same dark ink in both themes, so it is clearly not part of the public site.
+  --admin-bg: #1b1922;
+  --admin-hover: #2a2734;
+  --admin-border: #2f2c3a;
+  --admin-text: #e6e4ee;
+  --admin-muted: #9d99ad;
+  --admin-accent: #b597ff;
 
   color-scheme: light;
 }

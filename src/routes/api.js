@@ -8,6 +8,7 @@ import { message_model } from '../models/Message.js';
 import { loadProjects } from '../data/projects.js';
 import { site } from '../content/site.js';
 import { uploadDir, UPLOAD_URL, uniqueFilename, deleteUpload } from '../utils/uploads.js';
+import { isAdmin, isValidKey, startSession, endSession, tooManyLogins, recordFailedLogin } from '../utils/admin.js';
 import { isRepoName, listRepos, importRepo, syncProject } from '../utils/github.js';
 const router = express.Router();
 
@@ -33,15 +34,10 @@ const upload = multer({
 
 /* ---------- Helpers ---------- */
 
-// Every change needs the key from PORTFOLIO_API_KEY in src/config/.env, sent as the x-api-key header.
-function hasApiKey(req) {
-    const key = process.env.PORTFOLIO_API_KEY;
-    return Boolean(key) && req.headers['x-api-key'] === key;
-}
-
+// Every change needs the admin login cookie, or the key from PORTFOLIO_API_KEY sent as the x-api-key header.
 function requireApiKey(req, res, next) {
-    if (!hasApiKey(req)) {
-        return res.status(401).json({ message: 'Invalid API key' });
+    if (!isAdmin(req)) {
+        return res.status(401).json({ message: 'Please sign in again' });
     }
     next();
 }
@@ -55,9 +51,9 @@ function withUploads(handler) {
                 removeUploaded(req);
                 return res.status(400).json({ message: err.message });
             }
-            if (!hasApiKey(req)) {
+            if (!isAdmin(req)) {
                 removeUploaded(req);
-                return res.status(401).json({ message: 'Invalid API key' });
+                return res.status(401).json({ message: 'Please sign in again' });
             }
             try {
                 await handler(req, res);
@@ -194,7 +190,28 @@ router.get('/projects', async (req, res) => {
     }
 });
 
-// Lets the admin page check a key before showing the editor.
+// Signs in with the key: { "key": "..." }. The login cookie lasts a week.
+router.post('/admin/login', (req, res) => {
+    if (tooManyLogins(req)) {
+        return res.status(429).json({ message: 'Too many wrong keys. Try again in 15 minutes.' });
+    }
+    if (!isValidKey(req.body?.key)) {
+        recordFailedLogin(req);
+        return res.status(401).json({ message: 'Wrong key' });
+    }
+    startSession(req, res);
+    res.json({ ok: true });
+});
+
+// Logs out. The admin bar sends a normal form, so that answer goes back to the page it came from.
+router.post('/admin/logout', (req, res) => {
+    endSession(req, res);
+    if (req.is('application/json')) return res.json({ ok: true });
+    const back = String(req.body?.back || '');
+    res.redirect(303, /^\/[^/\\]/.test(back) ? back : '/');
+});
+
+// Lets the admin page check whether it is signed in before showing the editor.
 router.get('/admin/check', requireApiKey, (req, res) => {
     res.json({ ok: true });
 });

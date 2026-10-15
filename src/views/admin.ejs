@@ -6,13 +6,13 @@
 
   <main class="container admin__main">
 
-    <%# Step 1: unlock with the API key (PORTFOLIO_API_KEY in src/config/.env). %>
+    <%# Step 1: sign in with the key (PORTFOLIO_API_KEY in src/config/.env). The login lasts a week. %>
     <section class="admin__login card" id="login" hidden>
       <h1 class="admin__title">Admin</h1>
-      <p>Enter your API key to manage projects and read messages.</p>
+      <p>Enter your key to manage projects and read messages. You stay signed in on this browser for a week, and the admin bar follows you across the site.</p>
       <form id="login-form" class="admin__row">
         <input type="password" id="api-key" class="field__input" placeholder="API key" autocomplete="current-password" required>
-        <button class="btn btn--primary" type="submit">Unlock</button>
+        <button class="btn btn--primary" type="submit">Sign in</button>
       </form>
     </section>
 
@@ -20,7 +20,6 @@
     <nav class="admin__tabs" id="admin-tabs" aria-label="Admin sections" hidden>
       <button type="button" class="admin__tab" data-tab="list">Projects</button>
       <button type="button" class="admin__tab" data-tab="messages">Messages <span class="admin__count" id="unread-count" hidden></span></button>
-      <button type="button" class="btn btn--ghost admin__lock" id="logout">Lock</button>
     </nav>
 
     <%# Step 2: list of projects. %>

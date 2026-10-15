@@ -1,15 +1,14 @@
 // Admin page: list, create, edit and delete projects through /api/projects, add them from
 // GitHub repositories, and read contact form messages through /api/messages.
-// The API key is kept in sessionStorage, so it is forgotten when the browser tab closes.
+// Signing in sets a login cookie that lasts a week; while it is valid every page shows the admin bar.
+// The admin bar links here with #messages, #import, #new or #edit=<project id> to open that view.
 
-const KEY_STORAGE = 'malikweb-admin-key';
 const { languages } = JSON.parse(document.getElementById('admin-config').textContent);
 
 const $ = id => document.getElementById(id);
 const views = { login: $('login'), list: $('list-view'), import: $('import-view'), editor: $('editor-view'), messages: $('messages-view') };
 const form = $('project-form');
 
-let apiKey = sessionStorage.getItem(KEY_STORAGE) || '';
 let projects = [];
 let messages = [];
 let repos = null;        // GitHub repositories, loaded the first time they are needed
@@ -42,14 +41,11 @@ function toast(message, isError = false) {
 }
 
 async function api(path, options = {}) {
-    const res = await fetch(`/api${path}`, {
-        ...options,
-        headers: { 'x-api-key': apiKey, ...(options.headers || {}) }
-    });
+    const res = await fetch(`/api${path}`, options);
     const data = await res.json().catch(() => ({}));
     if (res.status === 401) {
-        lock();
-        throw new Error('Invalid API key');
+        show('login');
+        throw new Error(data.message || 'Please sign in again');
     }
     if (!res.ok) throw new Error(data.message || 'Something went wrong');
     return data;
@@ -72,30 +68,48 @@ function emptyAlt() {
 
 /* ---------- Login ---------- */
 
-async function unlock(key) {
-    apiKey = key;
+// Reloads after signing in, so the admin bar appears on this page too.
+$('login-form').addEventListener('submit', async event => {
+    event.preventDefault();
+    const button = event.submitter;
+    button.disabled = true;
     try {
-        await api('/admin/check');
-        sessionStorage.setItem(KEY_STORAGE, key);
-        await showList();
-        loadMessages().catch(() => {});
+        await api('/admin/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ key: $('api-key').value.trim() })
+        });
+        location.reload();
     } catch (err) {
         toast(err.message, true);
+        button.disabled = false;
+    }
+});
+
+// Opens the view the address asks for (links from the admin bar), then clears it from the
+// address, so the same link works again when clicked a second time.
+async function route() {
+    const hash = location.hash.slice(1);
+    if (hash) history.replaceState(null, '', location.pathname + location.search);
+
+    if (hash === 'messages') return showMessages();
+    if (hash === 'import') {
+        if (!projects.length) await showList();
+        return showImport();
+    }
+    if (hash === 'new') return openEditor(null);
+
+    await showList();
+    if (hash.startsWith('edit=')) {
+        const project = projects.find(p => p._id === hash.slice(5));
+        if (project) openEditor(project);
+        else toast('That project no longer exists.', true);
     }
 }
 
-function lock() {
-    apiKey = '';
-    sessionStorage.removeItem(KEY_STORAGE);
-    show('login');
-}
-
-$('login-form').addEventListener('submit', event => {
-    event.preventDefault();
-    unlock($('api-key').value.trim());
+window.addEventListener('hashchange', () => {
+    if (views.login.hidden) route().catch(err => toast(err.message, true));
 });
-
-$('logout').addEventListener('click', lock);
 
 /* ---------- Project list ---------- */
 
@@ -193,11 +207,16 @@ $('cancel-edit').addEventListener('click', () => showList().catch(err => toast(e
 
 const dateFormat = new Intl.DateTimeFormat(undefined, { dateStyle: 'medium', timeStyle: 'short' });
 
+// Keeps the count on the Messages tab and in the admin bar in step.
 function updateUnreadCount() {
     const unread = messages.filter(m => !m.read).length;
-    const badge = $('unread-count');
-    badge.textContent = unread;
-    badge.hidden = unread === 0;
+    document.querySelectorAll('#unread-count, [data-admin-unread]').forEach(badge => {
+        badge.textContent = unread;
+        badge.hidden = unread === 0;
+    });
+    document.querySelectorAll('[data-admin-unread-text]').forEach(text => {
+        text.textContent = unread ? `${unread} unread` : 'No unread messages';
+    });
 }
 
 async function loadMessages() {
@@ -494,8 +513,12 @@ $('delete-project').addEventListener('click', async () => {
 
 /* ---------- Start ---------- */
 
-if (apiKey) {
-    unlock(apiKey);
-} else {
-    show('login');
-}
+// The key used to be kept for the browser tab only; it is not needed any more.
+try { sessionStorage.removeItem('malikweb-admin-key'); } catch {}
+
+api('/admin/check')
+    .then(async () => {
+        await route();
+        loadMessages().catch(() => {});
+    })
+    .catch(() => show('login'));

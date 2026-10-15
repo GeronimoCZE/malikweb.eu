@@ -16,6 +16,7 @@ import { buildSitemap, buildRobots } from './utils/seo.js';
 import { projects, loadProjects } from './data/projects.js';
 import { site } from './content/site.js';
 import { syncAll } from './utils/github.js';
+import { adminBar } from './utils/admin.js';
 
 
 const app = express();
@@ -119,6 +120,9 @@ app.use('/:lang', (req, res, next) => {
     next();
 });
 
+
+// While signed in as admin, every page shows the admin bar.
+app.use('/:lang', adminBar);
 
 app.use('/:lang', router)
 

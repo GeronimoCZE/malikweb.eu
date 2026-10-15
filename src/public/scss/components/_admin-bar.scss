@@ -1,0 +1,253 @@
+@use '../abstracts/breakpoints' as bp;
+
+// Admin bar (only rendered while signed in as admin) and the Edit links it adds to pages.
+// Everything that belongs to the admin layer uses the same dark ink in both themes,
+// so it never reads as part of the public site.
+
+.admin-bar {
+  position: sticky;
+  top: 0;
+  z-index: 60;
+  height: var(--admin-bar-height);
+  background: var(--admin-bg);
+  color: var(--admin-text);
+  border-bottom: 1px solid var(--admin-border);
+  font-size: 0.82rem;
+  line-height: 1;
+
+  &__inner {
+    display: flex;
+    align-items: stretch;
+    height: 100%;
+    padding: 0 8px;
+  }
+
+  &__item {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 100%;
+    padding: 0 12px;
+    color: var(--admin-text);
+    font-weight: 500;
+    white-space: nowrap;
+    cursor: pointer;
+    list-style: none;
+    transition: color var(--duration) ease, background-color var(--duration) ease;
+
+    &::-webkit-details-marker {
+      display: none;
+    }
+
+    .icon {
+      width: 16px;
+      height: 16px;
+      color: var(--admin-muted);
+      transition: color var(--duration) ease;
+    }
+
+    &:hover,
+    [open] > & {
+      color: #fff;
+      background: var(--admin-hover);
+
+      .icon {
+        color: #fff;
+      }
+    }
+
+    &:focus-visible {
+      outline-offset: -2px;
+    }
+
+    // The page you are on gets a line under it, like the site navigation.
+    &.is-current::after {
+      content: '';
+      position: absolute;
+      left: 12px;
+      right: 12px;
+      bottom: 0;
+      height: 2px;
+      background: var(--admin-accent);
+    }
+  }
+
+  &__home {
+    font-weight: 600;
+    color: #fff;
+  }
+
+  // The one change you can make to the page you are looking at.
+  &__edit,
+  &__edit .icon {
+    color: var(--admin-accent);
+  }
+
+  &__count {
+    display: inline-grid;
+    place-items: center;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    border-radius: 9px;
+    background: var(--admin-accent);
+    color: var(--admin-bg);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 700;
+
+    &[hidden] {
+      display: none;
+    }
+  }
+
+  &__menu {
+    position: relative;
+  }
+
+  &__panel {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 320px;
+    padding: 6px 0;
+    background: var(--admin-bg);
+    border: 1px solid var(--admin-border);
+    border-top: none;
+    border-radius: 0 0 var(--radius) var(--radius);
+    line-height: 1.4;
+
+    &--narrow {
+      width: 220px;
+    }
+  }
+
+  &__panel-title {
+    padding: 10px 14px 6px;
+    color: var(--admin-muted);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  &__messages a,
+  &__panel-link {
+    display: block;
+    padding: 8px 14px;
+    transition: background-color var(--duration) ease;
+
+    &:hover {
+      background: var(--admin-hover);
+    }
+
+    &:focus-visible {
+      outline-offset: -2px;
+    }
+  }
+
+  &__messages {
+    strong,
+    span {
+      display: block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    strong {
+      color: #fff;
+      font-weight: 600;
+    }
+
+    span {
+      margin-top: 2px;
+      color: var(--admin-muted);
+      font-size: 0.76rem;
+    }
+  }
+
+  &__messages + &__panel-link {
+    margin-top: 4px;
+    border-top: 1px solid var(--admin-border);
+    padding-top: 10px;
+  }
+
+  &__panel-link {
+    color: #fff;
+  }
+
+  &__logout {
+    margin-left: auto;
+  }
+
+  @include bp.down(sm) {
+    &__inner {
+      padding: 0;
+    }
+
+    // Icons only on phones; the Edit link keeps its words because it is the action that matters.
+    &__label {
+      display: none;
+    }
+
+    &__menu {
+      position: static;
+    }
+
+    &__panel,
+    &__panel--narrow {
+      position: absolute;
+      left: 0;
+      right: 0;
+      width: auto;
+      border-radius: 0;
+      border-left: none;
+      border-right: none;
+    }
+  }
+}
+
+// Leave room for the admin bar above the sticky site header and when jumping to a section.
+.admin-bar ~ .site-header {
+  top: var(--admin-bar-height);
+}
+
+html:has(.admin-bar) {
+  scroll-padding-top: calc(var(--header-height) + var(--admin-bar-height) + 16px);
+}
+
+// Edit link on top of project cards on the home page.
+.admin-editable {
+  position: relative;
+  display: grid;
+
+  &__link {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    border-radius: var(--radius-sm);
+    background: var(--admin-bg);
+    color: #fff;
+    font-size: 0.78rem;
+    font-weight: 600;
+    line-height: 1;
+    transition: background-color var(--duration) ease;
+
+    .icon {
+      width: 14px;
+      height: 14px;
+      color: var(--admin-accent);
+    }
+
+    &:hover {
+      background: var(--admin-hover);
+    }
+  }
+}
