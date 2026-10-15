@@ -130,6 +130,9 @@
 	},
 	"helpers": {
 		"reveal": "odhalit",
+		"copied": "Zkopírováno do schránky",
+		"copyManual": "Zkopírujte pomocí Ctrl+C",
+		"copyTitle": "Kliknutím zkopírujete",
 		"loading": "Načítám data"
 	},
 	"notFound": {
