@@ -43,6 +43,10 @@
 					"description": "Zkušenosti s Git a GitHubem pro správu verzí a spolupráci na projektech."
 				},
 				{
+					"name": "AI agenti",
+					"description": "Zkušenosti s využíváním AI agentů v každodenní práci a psaním kódu s jejich pomocí, od plánování a vývoje funkcí až po kontrolu změn."
+				},
+				{
 					"name": "deployment",
 					"description": "Zkušenosti s linuxem, správou Ubuntu serveru a různými poskytovateli hostingů, jako např. DigitalOcean nebo Hostinger."
 				},
