@@ -69,11 +69,6 @@ app.get('/robots.txt', (req, res) => {
     res.type('text/plain').send(buildRobots());
 });
 
-// Old sitemap files, in case a search engine still has them saved.
-app.get(['/sitemaps/index.txt', '/sitemaps/sitemap_1.txt'], (req, res) => {
-    res.redirect(301, '/sitemap.xml');
-});
-
 i18n.configure({
     locales: site.languages,
     defaultLocale: site.defaultLanguage,
