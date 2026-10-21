@@ -59,8 +59,7 @@ export function buildSitemap(projects) {
 export function buildRobots() {
     return [
         'User-agent: *',
-        'Disallow: /api/',
-        '',
+        'Allow: /',
         `Sitemap: ${site.baseUrl}/sitemap.xml`,
         ''
     ].join('\n');
